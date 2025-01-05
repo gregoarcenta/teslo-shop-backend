@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 // import { ProductsService } from '../products/products.service';
 import { AuthService } from '../auth/auth.service';
 import { initialData } from './data/seed-data';
-import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class SeedService {
@@ -24,14 +23,9 @@ export class SeedService {
   private async insertUsers(): Promise<void> {
     const users = initialData.users;
 
-    let insertPromises = [];
-
     for (const user of users) {
-      user.password = await bcrypt.hash(user.password, 10);
-      insertPromises.push(this.authService.signUp(user));
+      await this.authService.signUp(user);
     }
-
-    await Promise.all(insertPromises);
   }
 
   // private async insertProducts(adminUser: User) {

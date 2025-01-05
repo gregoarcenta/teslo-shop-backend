@@ -94,7 +94,7 @@ export class AuthService {
     return await this.jwtService.signAsync(payload);
   }
 
-  async removeAllUsers() {
+  async removeAllUsers(): Promise<void> {
     const query = this.usersRepository.createQueryBuilder();
     try {
       await query.delete().execute();

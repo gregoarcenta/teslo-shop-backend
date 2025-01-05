@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Role } from '../../config';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { Product } from '../../products/entities/product.entity';
 
 @Entity('users')
@@ -28,6 +28,7 @@ export class User {
   @Column({ type: 'varchar', length: 254, unique: true })
   email: string;
 
+  @ApiHideProperty()
   @Column({ type: 'varchar', length: 60, select: false })
   password: string;
 

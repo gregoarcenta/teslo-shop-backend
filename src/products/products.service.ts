@@ -1,11 +1,32 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { User } from '../auth/entities/user.entity';
+import { Product } from './entities/product.entity';
+import { Repository } from 'typeorm';
+import { HandlerException } from '../common/exceptions/handler.exception';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class ProductsService {
-  create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
+  constructor(
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
+    private readonly handlerException: HandlerException,
+  ) {}
+
+  async create(createProductDto: CreateProductDto, createdBy: User) {
+    // const productDto = this.buildDtoCreateAndUpdate(createProductDto);
+    try {
+      const product = this.productRepository.create({
+        ...createProductDto,
+        createdBy,
+      });
+      return await this.productRepository.save(product);
+      // return await this.findOnePlain(id);
+    } catch (err) {
+      this.handlerException.handlerDBException(err);
+    }
   }
 
   findAll() {

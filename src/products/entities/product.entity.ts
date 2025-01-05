@@ -29,20 +29,20 @@ export class Product {
   title: string;
 
   @ApiProperty({
-    description: 'Product description',
-    example: 'lorem ipsum dolor sit amet',
-    default: null,
-  })
-  @Column({ type: 'varchar', length: 250, nullable: true })
-  description: string;
-
-  @ApiProperty({
     description: 'Product slug',
     example: 't-shirt-teslo',
     uniqueItems: true,
   })
   @Column({ type: 'varchar', length: 100, unique: true })
   slug: string;
+
+  @ApiProperty({
+    description: 'Product description',
+    example: 'lorem ipsum dolor sit amet',
+    default: null,
+  })
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  description: string;
 
   @ApiProperty({
     description: 'Product price',
@@ -64,13 +64,13 @@ export class Product {
   @Column({ type: 'enum', enum: Type })
   type: Type;
 
-  @ApiProperty({ example: ['M', 'XL', 'XXL'], description: 'Product sizes' })
-  @Column({ type: 'enum', enum: Size, array: true })
-  sizes: Size[];
-
   @ApiProperty({ description: 'Product gender', example: 'men' })
   @Column({ type: 'enum', enum: Gender })
   gender: Gender;
+
+  @ApiProperty({ example: ['M', 'XL', 'XXL'], description: 'Product sizes' })
+  @Column({ type: 'enum', enum: Size, array: true })
+  sizes: Size[];
 
   @ApiProperty({
     description: 'Product tags',
