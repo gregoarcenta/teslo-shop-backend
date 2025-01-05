@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Role } from '../../config';
 import { ApiProperty } from '@nestjs/swagger';
+import { Product } from '../../products/entities/product.entity';
 
 @Entity('users')
 export class User {
@@ -41,8 +42,11 @@ export class User {
   @ApiProperty({
     description: 'User roles',
     example: ['user'],
-    default:['user'],
+    default: ['user'],
   })
   @Column({ type: 'enum', enum: Role, array: true, default: [Role.USER] })
   roles: Role[];
+
+  @OneToMany(() => Product, (product) => product.createdBy)
+  products: Product[];
 }

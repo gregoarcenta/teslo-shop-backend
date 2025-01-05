@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmConfigService, validationSchema } from './config';
 import { SeedModule } from './seed/seed.module';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { SeedModule } from './seed/seed.module';
     TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigService }),
     AuthModule,
     SeedModule,
+    ProductsModule,
   ],
 })
 export class AppModule {}

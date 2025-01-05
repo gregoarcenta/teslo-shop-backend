@@ -18,7 +18,7 @@ type ValidSizes = 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'XXXL';
 type ValidTypes = 'shirts' | 'pants' | 'hoodies' | 'hats';
 
 interface SeedData {
-  users: Omit<User, 'id' | 'isActive'>[];
+  users: Omit<User, 'id' | 'isActive' | 'products'>[];
   products: SeedProduct[];
 }
 
