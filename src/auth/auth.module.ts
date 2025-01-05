@@ -17,6 +17,6 @@ import { HandlerException } from '../common/exceptions/handler.exception';
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({ useClass: JwtConfigService, global: true }),
   ],
-  exports: [TypeOrmModule, PassportModule],
+  exports: [TypeOrmModule, PassportModule, AuthService],
 })
 export class AuthModule {}

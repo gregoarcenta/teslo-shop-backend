@@ -93,4 +93,13 @@ export class AuthService {
   private async getJwtToken(payload: IPayloadJwt): Promise<string> {
     return await this.jwtService.signAsync(payload);
   }
+
+  async removeAllUsers() {
+    const query = this.usersRepository.createQueryBuilder();
+    try {
+      await query.delete().execute();
+    } catch (err) {
+      this.handlerException.handlerDBException(err);
+    }
+  }
 }
