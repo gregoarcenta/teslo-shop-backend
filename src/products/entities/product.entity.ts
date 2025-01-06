@@ -4,10 +4,12 @@ import {
   Column,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../auth/entities/user.entity';
+import { ProductImage } from './product-image.entity';
 import { Gender, Size, Type } from '../enums';
 
 @Entity({ name: 'products' })
@@ -80,15 +82,15 @@ export class Product {
   @Column({ type: 'varchar', length: 20, array: true, default: [] })
   tags: string[];
 
-  // @ApiProperty({
-  //   example: ['image1.jpg', 'image2.jpg'],
-  //   description: 'Product images',
-  // })
-  // @OneToMany(() => ProductImage, (productImage) => productImage.product, {
-  //   cascade: true,
-  //   eager: true,
-  // })
-  // images: ProductImage[];
+  @ApiProperty({
+    example: ['image1.jpg', 'image2.jpg'],
+    description: 'Product images',
+  })
+  @OneToMany(() => ProductImage, (productImage) => productImage.product, {
+    // cascade: true,
+    eager: true,
+  })
+  images: ProductImage[];
 
   @ManyToOne(() => User, (user) => user.products, { eager: true })
   createdBy: User;
