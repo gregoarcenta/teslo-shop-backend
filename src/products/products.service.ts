@@ -116,8 +116,23 @@ export class ProductsService {
     }
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} product`;
+  async remove(id: string) {
+    const product = await this.findOne(id);
+    try {
+      await this.productRepository.delete(product.id);
+      return `Product ${product.title} has been removed`;
+    } catch (err) {
+      this.handlerException.handlerDBException(err);
+    }
+  }
+
+  async removeAll() {
+    const query = this.productRepository.createQueryBuilder();
+    try {
+      return await query.delete().execute();
+    } catch (err) {
+      this.handlerException.handlerDBException(err);
+    }
   }
 
   private async createSlug(product: Product): Promise<string> {
