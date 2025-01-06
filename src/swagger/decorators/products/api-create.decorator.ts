@@ -1,17 +1,19 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
 import { ApiErrorResponses } from '../api-error-responses.decorator';
-import { UserResponseDto } from '../../../auth/dto/user-response.dto';
+import { ProductResponseDto } from '../../../products/dto/product-response.dto';
 
-export const ApiSignUpResponse = () => {
+export const ApiCreateResponse = () => {
   return applyDecorators(
-    ApiOperation({ summary: 'User Register' }),
+    ApiOperation({ summary: 'Create new Product' }),
     ApiCreatedResponse({
-      description: 'User has been successfully registered.',
-      type: UserResponseDto,
+      description: 'Product has been successfully created.',
+      type: ProductResponseDto,
     }),
     ApiErrorResponses({
+      unauthorized: true,
       badRequest: true,
+      forbidden: true,
       internalServerError: true,
     }),
   );

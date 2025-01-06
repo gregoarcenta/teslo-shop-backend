@@ -90,7 +90,6 @@ export class Product {
   // })
   // images: ProductImage[];
 
-  @ApiProperty()
   @ManyToOne(() => User, (user) => user.products, { eager: true })
   createdBy: User;
 

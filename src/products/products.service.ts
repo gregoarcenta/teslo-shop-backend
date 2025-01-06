@@ -6,6 +6,7 @@ import { Product } from './entities/product.entity';
 import { Repository } from 'typeorm';
 import { HandlerException } from '../common/exceptions/handler.exception';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ProductResponseDto } from './dto/product-response.dto';
 
 @Injectable()
 export class ProductsService {
@@ -15,15 +16,17 @@ export class ProductsService {
     private readonly handlerException: HandlerException,
   ) {}
 
-  async create(createProductDto: CreateProductDto, createdBy: User) {
-    // const productDto = this.buildDtoCreateAndUpdate(createProductDto);
+  async create(
+    createProductDto: CreateProductDto,
+    createdBy: User,
+  ): Promise<ProductResponseDto> {
     try {
       const product = this.productRepository.create({
         ...createProductDto,
         createdBy,
       });
-      return await this.productRepository.save(product);
-      // return await this.findOnePlain(id);
+      await this.productRepository.save(product);
+      return { ...product, createdBy: product.createdBy.fullName };
     } catch (err) {
       this.handlerException.handlerDBException(err);
     }

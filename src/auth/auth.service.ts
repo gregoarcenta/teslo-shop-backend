@@ -12,7 +12,7 @@ import { IPayloadJwt } from './strategies/jwt.strategy';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { User } from './entities/user.entity';
-import { UserResponse } from './interfaces/user-response';
+import { UserResponseDto } from './dto/user-response.dto';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +22,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signUp(signUpDto: SignUpDto): Promise<UserResponse> {
+  async signUp(signUpDto: SignUpDto): Promise<UserResponseDto> {
     const user = this.usersRepository.create({
       ...signUpDto,
       password: await bcrypt.hash(signUpDto.password, 10),
@@ -40,7 +40,7 @@ export class AuthService {
     };
   }
 
-  async signIn(signInDto: SignInDto): Promise<UserResponse> {
+  async signIn(signInDto: SignInDto): Promise<UserResponseDto> {
     let user: User;
     try {
       user = await this.usersRepository
@@ -69,7 +69,7 @@ export class AuthService {
     };
   }
 
-  async checkStatus(user: User): Promise<UserResponse> {
+  async checkStatus(user: User): Promise<UserResponseDto> {
     return {
       user,
       accessToken: await this.getJwtToken({ id: user.id }),
