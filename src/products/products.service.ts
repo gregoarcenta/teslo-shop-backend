@@ -7,7 +7,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { User } from '../auth/entities/user.entity';
 import { Product } from './entities/product.entity';
-import { ILike, Not, Repository } from 'typeorm';
+import { DataSource, ILike, Not, Repository } from 'typeorm';
 import { HandlerException } from '../common/exceptions/handler.exception';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductResponseDto } from './dto/product-response.dto';
@@ -17,6 +17,7 @@ import { isUUID } from 'class-validator';
 @Injectable()
 export class ProductsService {
   constructor(
+    private readonly dataSource: DataSource,
     private readonly handlerException: HandlerException,
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
@@ -70,11 +71,52 @@ export class ProductsService {
     };
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(
+    id: string,
+    updateProductDto: UpdateProductDto,
+    createdBy: User,
+  ) {
+    // Build product with images
+    let productDto: Product = this.buildCreateDtoWithImages(updateProductDto);
+    productDto.id = id;
+
+    // Generate and validate slug
+    const slug = await this.updateSlug(productDto);
+    if (slug) productDto.slug = slug;
+
+    // Carga la instancia del producto a actualizar
+    productDto = await this.productRepository.preload({
+      ...productDto,
+      createdBy,
+    });
+
+    if (!productDto)
+      throw new NotFoundException(`Product with id: ${id} not found`);
+
+    // Crea un QueryRunner para iniciar una transaccion
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      // Si existen imagenes nuevas se eliminan las anteriores
+      if (productDto.images?.length > 0) {
+        await queryRunner.manager.delete(ProductImage, { product: id });
+      }
+      // Actualiza el producto
+      await queryRunner.manager.save(productDto);
+      // Commit de la transaccion
+      await queryRunner.commitTransaction();
+
+      return this.findOne(id);
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      this.handlerException.handlerDBException(err);
+    } finally {
+      await queryRunner.release();
+    }
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} product`;
   }
 
@@ -83,6 +125,18 @@ export class ProductsService {
     if (!slug) return this.convertToSlug(title);
 
     await this.validateSlugUniqueness(slug);
+
+    return this.convertToSlug(slug);
+  }
+
+  private async updateSlug(product: Product): Promise<string | null> {
+    const { id, title, slug } = product;
+    if (!slug) {
+      if (title) return this.convertToSlug(title);
+      else return null;
+    }
+
+    await this.validateSlugUniqueness(slug, id);
 
     return this.convertToSlug(slug);
   }

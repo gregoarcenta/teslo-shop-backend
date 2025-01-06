@@ -83,6 +83,7 @@ export class CreateProductDto {
     description: 'Product images',
   })
   @IsString({ each: true })
+  @Length(1, 50, { each: true })
   @IsArray()
   @IsOptional()
   images?: string[];
