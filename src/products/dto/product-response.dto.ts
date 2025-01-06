@@ -7,5 +7,10 @@ export class ProductResponseDto extends OmitType(Product, [
 ]) {
   @ApiProperty({ description: 'Product createdBy', example: 'Admin' })
   createdBy: string;
+
+  @ApiProperty({
+    description: 'Product images',
+    example: ['image1.jpg', 'image2.jpg'],
+  })
   images: string[];
 }

@@ -7,6 +7,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -17,10 +18,12 @@ import { User } from '../auth/entities/user.entity';
 import { ApiTags } from '@nestjs/swagger';
 import {
   ApiCreateResponse,
+  ApiFindAllResponse,
   ApiFindOneResponse,
   ApiRemoveResponse,
   ApiUpdateResponse,
 } from '../swagger/decorators/products';
+import { PaginateProductDto } from './dto/paginate-product.dto';
 
 @ApiTags('Products')
 @Controller('products')
@@ -35,8 +38,9 @@ export class ProductsController {
   }
 
   @Get()
-  findAll() {
-    return this.productsService.findAll();
+  @ApiFindAllResponse()
+  findAll(@Query() paginate: PaginateProductDto) {
+    return this.productsService.findAll(paginate);
   }
 
   @Get(':term')

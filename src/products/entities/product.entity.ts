@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
@@ -92,4 +93,11 @@ export class Product {
 
   @ManyToOne(() => User, (user) => user.products, { eager: true })
   createdBy: User;
+
+  @CreateDateColumn({ type: 'timestamptz' })
+  @ApiProperty({
+    description: 'Product created at',
+    example: '2024-11-08T22:51:11.862Z',
+  })
+  created_at: Date;
 }

@@ -13,6 +13,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ProductResponseDto } from './dto/product-response.dto';
 import { ProductImage } from './entities/product-image.entity';
 import { isUUID } from 'class-validator';
+import { PaginateProductDto } from './dto/paginate-product.dto';
 
 @Injectable()
 export class ProductsService {
@@ -47,8 +48,24 @@ export class ProductsService {
     }
   }
 
-  async findAll() {
-    return `This action returns all products`;
+  async findAll(paginate: PaginateProductDto): Promise<ProductResponseDto[]> {
+    paginate.limit ??= 10;
+    paginate.offset ??= 0;
+    try {
+      const products = await this.productRepository.find({
+        take: paginate.limit,
+        skip: paginate.offset,
+        order: { created_at: 'DESC' },
+      });
+
+      return products.map(({ images, ...productProperties }) => ({
+        ...productProperties,
+        createdBy: productProperties.createdBy.fullName,
+        images: images.map((img) => img.name),
+      }));
+    } catch (err) {
+      this.handlerException.handlerDBException(err);
+    }
   }
 
   async findOne(term: string): Promise<ProductResponseDto> {
@@ -75,7 +92,7 @@ export class ProductsService {
     id: string,
     updateProductDto: UpdateProductDto,
     createdBy: User,
-  ) {
+  ): Promise<ProductResponseDto> {
     // Build product with images
     let productDto: Product = this.buildCreateDtoWithImages(updateProductDto);
     productDto.id = id;
@@ -116,7 +133,7 @@ export class ProductsService {
     }
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<string> {
     const product = await this.findOne(id);
     try {
       await this.productRepository.delete(product.id);
@@ -126,10 +143,10 @@ export class ProductsService {
     }
   }
 
-  async removeAll() {
+  async removeAll(): Promise<void> {
     const query = this.productRepository.createQueryBuilder();
     try {
-      return await query.delete().execute();
+      await query.delete().execute();
     } catch (err) {
       this.handlerException.handlerDBException(err);
     }

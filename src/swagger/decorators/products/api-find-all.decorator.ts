@@ -3,15 +3,14 @@ import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { ApiErrorResponses } from '../api-error-responses.decorator';
 import { ProductResponseDto } from '../../../products/dto/product-response.dto';
 
-export const ApiFindOneResponse = () => {
+export const ApiFindAllResponse = () => {
   return applyDecorators(
-    ApiOperation({ summary: 'Find Product by id, title, slug' }),
+    ApiOperation({ summary: 'Find all Products' }),
     ApiOkResponse({
-      description: 'Product has been successfully getting.',
-      type: ProductResponseDto,
+      description: 'Products has been successfully getting.',
+      type: [ProductResponseDto],
     }),
     ApiErrorResponses({
-      notFound: true,
       badRequest: true,
       internalServerError: true,
     }),
