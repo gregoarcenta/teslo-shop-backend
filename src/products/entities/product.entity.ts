@@ -1,6 +1,4 @@
 import {
-  BeforeInsert,
-  BeforeUpdate,
   Column,
   Entity,
   ManyToOne,
@@ -87,30 +85,11 @@ export class Product {
     description: 'Product images',
   })
   @OneToMany(() => ProductImage, (productImage) => productImage.product, {
-    // cascade: true,
+    cascade: true,
     eager: true,
   })
   images: ProductImage[];
 
   @ManyToOne(() => User, (user) => user.products, { eager: true })
   createdBy: User;
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  checkSlugInsert() {
-    if (!this.slug) {
-      this.slug = this.title;
-    }
-    this.convertToSlug(this.slug);
-  }
-
-  private convertToSlug(value: string) {
-    this.slug = value
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase() // Convertir a minúsculas
-      .trim() // Eliminar espacios en blanco al principio y al final
-      .replace(/[\s\W-]+/g, '-') // Reemplazar espacios y caracteres no alfanuméricos por guiones
-      .replace(/^-+|-+$/g, ''); // Eliminar guiones al principio y al final
-  }
 }

@@ -3,8 +3,9 @@ import { Product } from '../entities/product.entity';
 
 export class ProductResponseDto extends OmitType(Product, [
   'createdBy',
-  'checkSlugInsert',
+  'images',
 ]) {
   @ApiProperty({ description: 'Product createdBy', example: 'Admin' })
   createdBy: string;
+  images: string[];
 }

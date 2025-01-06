@@ -20,7 +20,7 @@ export class ProductImage {
   name: string;
 
   @ManyToOne(() => Product, (product) => product.images, {
-    // onDelete: 'CASCADE',
+    onDelete: 'CASCADE',
   })
   product: Product;
 }

@@ -5,10 +5,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
 import { HandlerException } from '../common/exceptions/handler.exception';
 import { AuthModule } from '../auth/auth.module';
+import { ProductImage } from './entities/product-image.entity';
 
 @Module({
   controllers: [ProductsController],
-  imports: [AuthModule, TypeOrmModule.forFeature([Product])],
+  imports: [AuthModule, TypeOrmModule.forFeature([Product, ProductImage])],
   providers: [ProductsService, HandlerException],
 })
 export class ProductsModule {}

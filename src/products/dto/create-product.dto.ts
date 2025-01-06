@@ -78,13 +78,12 @@ export class CreateProductDto {
   @IsOptional()
   tags?: string[];
 
-  // @ApiProperty({
-  //   example: ['image1.jpg', 'image2.jpg'],
-  //   description: 'Product sizes',
-  //   required: false,
-  // })
-  // @IsString({ each: true })
-  // @IsArray()
-  // @IsOptional()
-  // images?: string[];
+  @ApiPropertyOptional({
+    example: ['image1.jpg', 'image2.jpg'],
+    description: 'Product images',
+  })
+  @IsString({ each: true })
+  @IsArray()
+  @IsOptional()
+  images?: string[];
 }
