@@ -1,7 +1,7 @@
 import { Gender, Size, Type } from '../../products/enums';
-import { CreateProductDto } from '../../products/dto/create-product.dto';
 import { User } from '../../auth/entities/user.entity';
 import { Role } from '../../config';
+import { CreateProductDto } from '../../products/dto';
 
 interface SeedData {
   users: Omit<User, 'id' | 'isActive' | 'products'>[];

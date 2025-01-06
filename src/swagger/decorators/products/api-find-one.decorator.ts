@@ -1,7 +1,7 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { ApiErrorResponses } from '../api-error-responses.decorator';
-import { ProductResponseDto } from '../../../products/dto/product-response.dto';
+import { ProductResponseDto } from '../../../products/dto';
 
 export const ApiFindOneResponse = () => {
   return applyDecorators(

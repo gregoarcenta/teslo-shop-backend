@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
-// import { ProductsService } from '../products/products.service';
 import { AuthService } from '../auth/auth.service';
 import { initialData } from './data/seed-data';
 import { ProductsService } from '../products/products.service';
 import { User } from '../auth/entities/user.entity';
-import { UserResponseDto } from '../auth/dto/user-response.dto';
+import { UserResponseDto } from '../auth/dto';
 
 @Injectable()
 export class SeedService {

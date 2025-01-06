@@ -9,10 +9,8 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { HandlerException } from '../common/exceptions/handler.exception';
 import { IPayloadJwt } from './strategies/jwt.strategy';
-import { SignUpDto } from './dto/sign-up.dto';
-import { SignInDto } from './dto/sign-in.dto';
 import { User } from './entities/user.entity';
-import { UserResponseDto } from './dto/user-response.dto';
+import { SignInDto, SignUpDto, UserResponseDto } from './dto';
 
 @Injectable()
 export class AuthService {

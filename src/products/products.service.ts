@@ -3,17 +3,18 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
 import { User } from '../auth/entities/user.entity';
-import { Product } from './entities/product.entity';
 import { DataSource, ILike, Not, Repository } from 'typeorm';
 import { HandlerException } from '../common/exceptions/handler.exception';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ProductResponseDto } from './dto/product-response.dto';
-import { ProductImage } from './entities/product-image.entity';
 import { isUUID } from 'class-validator';
-import { PaginateProductDto } from './dto/paginate-product.dto';
+import {
+  CreateProductDto,
+  PaginateProductDto,
+  ProductResponseDto,
+  UpdateProductDto,
+} from './dto';
+import { Product, ProductImage } from './entities';
 
 @Injectable()
 export class ProductsService {

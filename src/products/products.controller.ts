@@ -10,8 +10,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
 import { Auth, GetUser } from '../auth/decorators';
 import { Role } from '../config';
 import { User } from '../auth/entities/user.entity';
@@ -23,7 +21,7 @@ import {
   ApiRemoveResponse,
   ApiUpdateResponse,
 } from '../swagger/decorators/products';
-import { PaginateProductDto } from './dto/paginate-product.dto';
+import { CreateProductDto, PaginateProductDto, UpdateProductDto } from './dto';
 
 @ApiTags('Products')
 @Controller('products')

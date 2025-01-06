@@ -7,8 +7,6 @@ import {
   Post,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { SignUpDto } from './dto/sign-up.dto';
-import { SignInDto } from './dto/sign-in.dto';
 import { User } from './entities/user.entity';
 import { Auth, GetUser } from './decorators';
 import {
@@ -17,6 +15,7 @@ import {
   ApiSignUpResponse,
 } from '../swagger/decorators/auth';
 import { ApiTags } from '@nestjs/swagger';
+import { SignInDto, SignUpDto } from './dto';
 
 @ApiTags('Auth')
 @Controller('auth')

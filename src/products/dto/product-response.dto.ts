@@ -1,5 +1,5 @@
 import { ApiProperty, OmitType } from '@nestjs/swagger';
-import { Product } from '../entities/product.entity';
+import { Product } from '../entities';
 
 export class ProductResponseDto extends OmitType(Product, [
   'createdBy',
