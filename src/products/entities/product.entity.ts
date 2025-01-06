@@ -42,7 +42,7 @@ export class Product {
     example: 'lorem ipsum dolor sit amet',
     default: null,
   })
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column({ type: 'text', nullable: true })
   description: string;
 
   @ApiProperty({

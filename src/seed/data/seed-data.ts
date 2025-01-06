@@ -1,25 +1,11 @@
+import { Gender, Size, Type } from '../../products/enums';
+import { CreateProductDto } from '../../products/dto/create-product.dto';
 import { User } from '../../auth/entities/user.entity';
 import { Role } from '../../config';
 
-interface SeedProduct {
-  description: string;
-  images: string[];
-  stock: number;
-  price: number;
-  sizes: ValidSizes[];
-  slug: string;
-  tags: string[];
-  title: string;
-  type: ValidTypes;
-  gender: 'men' | 'women' | 'kid' | 'unisex';
-}
-
-type ValidSizes = 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'XXXL';
-type ValidTypes = 'shirts' | 'pants' | 'hoodies' | 'hats';
-
 interface SeedData {
   users: Omit<User, 'id' | 'isActive' | 'products'>[];
-  products: SeedProduct[];
+  products: CreateProductDto[];
 }
 
 export const initialData: SeedData = {
@@ -44,12 +30,12 @@ export const initialData: SeedData = {
       images: ['ql5rsw3bnebyjp8sun3r.jpg', 'evjw10lt3xnszvo2ar4z.jpg'],
       stock: 7,
       price: 75,
-      sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+      sizes: [Size.XS, Size.S, Size.M, Size.L, Size.XL, Size.XXL],
       slug: 'mens_chill_crew_neck_sweatshirt',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['sweatshirt'],
       title: 'Men’s Chill Crew Neck Sweatshirt',
-      gender: 'men',
+      gender: Gender.MEN,
     },
     {
       description:
@@ -57,12 +43,12 @@ export const initialData: SeedData = {
       images: ['xcw7s3w9fmai1anrcdwf.jpg', 'ii0ye9u0elcuohv6lhuq.jpg'],
       stock: 5,
       price: 200,
-      sizes: ['XS', 'S', 'M', 'XL', 'XXL'],
+      sizes: [Size.XS, Size.S, Size.M, Size.XL, Size.XXL],
       slug: 'men_quilted_shirt_jacket',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['jacket'],
       title: "Men's Quilted Shirt Jacket",
-      gender: 'men',
+      gender: Gender.MEN,
     },
     {
       description:
@@ -70,12 +56,12 @@ export const initialData: SeedData = {
       images: ['slgkaokfwhclfm1nkgqb.jpg', 'cfzyv2ych227ylyeik55.jpg'],
       stock: 10,
       price: 130,
-      sizes: ['S', 'M', 'L', 'XL', 'XXL'],
+      sizes: [Size.S, Size.M, Size.L, Size.XL, Size.XXL],
       slug: 'men_raven_lightweight_zip_up_bomber_jacket',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Men's Raven Lightweight Zip Up Bomber Jacket",
-      gender: 'men',
+      gender: Gender.MEN,
     },
     {
       description:
@@ -83,12 +69,12 @@ export const initialData: SeedData = {
       images: ['g4vtixxu4a0slzokntjm.jpg', 'ls6tpmiwzmzqf5rbp0wp.jpg'],
       stock: 50,
       price: 45,
-      sizes: ['XS', 'S', 'M', 'L'],
+      sizes: [Size.XS, Size.S, Size.M, Size.L],
       slug: 'men_turbine_long_sleeve_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Men's Turbine Long Sleeve Tee",
-      gender: 'men',
+      gender: Gender.MEN,
     },
     {
       description:
@@ -96,12 +82,12 @@ export const initialData: SeedData = {
       images: ['s6xa6iiwa7pew6rpymbq.jpg', 'rbdytanmlswsynecpqbh.jpg'],
       stock: 50,
       price: 40,
-      sizes: ['M', 'L', 'XL', 'XXL'],
+      sizes: [Size.M, Size.L, Size.XL, Size.XXL],
       slug: 'men_turbine_short_sleeve_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Men's Turbine Short Sleeve Tee",
-      gender: 'men',
+      gender: Gender.MEN,
     },
     {
       description:
@@ -109,12 +95,12 @@ export const initialData: SeedData = {
       images: ['jhrgh2z0wuscq5g9ibrn.jpg', 'nbfzdsk4irzqhnwws4ax.jpg'],
       stock: 0,
       price: 35,
-      sizes: ['M', 'L', 'XL', 'XXL'],
+      sizes: [Size.M, Size.L, Size.XL, Size.XXL],
       slug: 'men_cybertruck_owl_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Men's Cybertruck Owl Tee",
-      gender: 'men',
+      gender: Gender.MEN,
     },
     {
       description:
@@ -122,12 +108,12 @@ export const initialData: SeedData = {
       images: ['stpdx61ys7qjlzvx2ivr.jpg', 'm5hj69o9phnr8i4gtiiy.jpg'],
       stock: 15,
       price: 35,
-      sizes: ['S', 'M', 'L', 'XL'],
+      sizes: [Size.S, Size.M, Size.L, Size.XL],
       slug: 'men_solar_roof_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Men's Solar Roof Tee",
-      gender: 'men',
+      gender: Gender.MEN,
     },
     {
       description:
@@ -135,12 +121,12 @@ export const initialData: SeedData = {
       images: ['edmxaxsgj5zdtydh650i.jpg', 'sqq02mlvi0rtktntujtp.jpg'],
       stock: 17,
       price: 35,
-      sizes: ['XS', 'S', 'XL', 'XXL'],
+      sizes: [Size.XS, Size.S, Size.XL, Size.XXL],
       slug: 'men_let_the_sun_shine_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Men's Let the Sun Shine Tee",
-      gender: 'men',
+      gender: Gender.MEN,
     },
     {
       description:
@@ -148,12 +134,12 @@ export const initialData: SeedData = {
       images: ['qrbbmrd7dohnghmlpys9.jpg', 'dtbrf04unj3jqn0tbpqc.jpg'],
       stock: 12,
       price: 35,
-      sizes: ['XS', 'S', 'M'],
+      sizes: [Size.XS, Size.S, Size.M],
       slug: 'men_3d_large_wordmark_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Men's 3D Large Wordmark Tee",
-      gender: 'men',
+      gender: Gender.MEN,
     },
     {
       description:
@@ -161,12 +147,12 @@ export const initialData: SeedData = {
       images: ['xuusu8rydjbjccajc0pj.jpg', 'jimzm0a4ov6f06mvwgoa.jpg'],
       stock: 5,
       price: 35,
-      sizes: ['XS', 'S'],
+      sizes: [Size.XS, Size.S],
       slug: 'men_3d_t_logo_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Men's 3D T Logo Tee",
-      gender: 'men',
+      gender: Gender.MEN,
     },
     {
       description:
@@ -174,12 +160,12 @@ export const initialData: SeedData = {
       images: ['kptuuxqwxke7j1am7ye4.jpg', 'tuolt6bu4kxnqjoxdty7.jpg'],
       stock: 2,
       price: 35,
-      sizes: ['XS', 'S', 'M'],
+      sizes: [Size.XS, Size.S, Size.M],
       slug: 'men_3d_small_wordmark_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: 'Men’s 3D Small Wordmark Tee',
-      gender: 'men',
+      gender: Gender.MEN,
     },
     {
       description:
@@ -187,12 +173,12 @@ export const initialData: SeedData = {
       images: ['caymuimfu8u7a9scettm.jpg', 'x6wlbxzkbu1dgviesnta.jpg'],
       stock: 82,
       price: 35,
-      sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+      sizes: [Size.XS, Size.S, Size.M, Size.L, Size.XL, Size.XXL],
       slug: 'men_plaid_mode_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Men's Plaid Mode Tee",
-      gender: 'men',
+      gender: Gender.MEN,
     },
     {
       description:
@@ -200,12 +186,12 @@ export const initialData: SeedData = {
       images: ['m08irb9crjfvpzeajcj6.jpg', 'sgnnqirw3gdof1l9vri8.jpg'],
       stock: 24,
       price: 35,
-      sizes: ['XL', 'XXL'],
+      sizes: [Size.XL, Size.XXL],
       slug: 'men_powerwall_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Men's Powerwall Tee",
-      gender: 'men',
+      gender: Gender.MEN,
     },
     {
       description:
@@ -213,12 +199,12 @@ export const initialData: SeedData = {
       images: ['iwilapbk8iipfrjvcpe6.jpg', 'h3diqni3hku0zly0crzc.jpg'],
       stock: 5,
       price: 30,
-      sizes: ['XS', 'S', 'XXL'],
+      sizes: [Size.XS, Size.S, Size.XXL],
       slug: 'men_battery_day_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Men's Battery Day Tee",
-      gender: 'men',
+      gender: Gender.MEN,
     },
     {
       description:
@@ -226,12 +212,12 @@ export const initialData: SeedData = {
       images: ['k5hrpenr5sk0v3lk6p5s.jpg', 'sygfeaheuyfjfznglryy.jpg'],
       stock: 150,
       price: 30,
-      sizes: ['M', 'L'],
+      sizes: [Size.M, Size.L],
       slug: 'men_cybertruck_bulletproof_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: 'Men’s Cybertruck Bulletproof Tee',
-      gender: 'men',
+      gender: Gender.MEN,
     },
     {
       description:
@@ -239,12 +225,12 @@ export const initialData: SeedData = {
       images: ['pp7chx6hp1aftccuzfrk.jpg', 'wvrtie9fowo2ziempmy4.jpg'],
       stock: 10,
       price: 35,
-      sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+      sizes: [Size.XS, Size.S, Size.M, Size.L, Size.XL, Size.XXL],
       slug: 'men_haha_yes_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Men's Haha Yes Tee",
-      gender: 'men',
+      gender: Gender.MEN,
     },
     {
       description:
@@ -252,12 +238,12 @@ export const initialData: SeedData = {
       images: ['l2rircfupcndjx4jnr6r.jpg', 'vfs1zego7i9s8n96x1cw.jpg'],
       stock: 34,
       price: 35,
-      sizes: ['XS', 'S', 'M', 'L'],
+      sizes: [Size.XS, Size.S, Size.M, Size.L],
       slug: 'men_s3xy_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Men's S3XY Tee",
-      gender: 'men',
+      gender: Gender.MEN,
     },
     {
       description:
@@ -265,12 +251,12 @@ export const initialData: SeedData = {
       images: ['ngblxebozstd6x3rrrci.jpg', 'xceinpdzirjishdr2evi.jpg'],
       stock: 15,
       price: 40,
-      sizes: ['XL', 'XXL'],
+      sizes: [Size.XL, Size.XXL],
       slug: 'men_3d_wordmark_long_sleeve_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Men's 3D Wordmark Long Sleeve Tee",
-      gender: 'men',
+      gender: Gender.MEN,
     },
     {
       description:
@@ -278,12 +264,12 @@ export const initialData: SeedData = {
       images: ['eurlhawpyotakmhe6vyt.jpg', 'xhltheyelq8ccuifllnj.jpg'],
       stock: 12,
       price: 40,
-      sizes: ['XS', 'XXL'],
+      sizes: [Size.XS, Size.XXL],
       slug: 'men_3d_t_logo_long_sleeve_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Men's 3D T Logo Long Sleeve Tee",
-      gender: 'men',
+      gender: Gender.MEN,
     },
     {
       description:
@@ -291,12 +277,12 @@ export const initialData: SeedData = {
       images: ['juu2qbdiafjwdd4epdv0.jpg', 'eeqzsttdagmnxjq4kz4g.jpg'],
       stock: 10,
       price: 115,
-      sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+      sizes: [Size.XS, Size.S, Size.M, Size.L, Size.XL, Size.XXL],
       slug: 'men_raven_lightweight_hoodie',
-      type: 'hoodies',
+      type: Type.HOODIES,
       tags: ['hoodie'],
       title: "Men's Raven Lightweight Hoodie",
-      gender: 'men',
+      gender: Gender.MEN,
     },
     {
       description:
@@ -304,12 +290,12 @@ export const initialData: SeedData = {
       images: ['yccsuzprxfkbqf6wz4jy.jpg', 'ao951n6zu1za8a8rbtdk.jpg'],
       stock: 10,
       price: 130,
-      sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+      sizes: [Size.XS, Size.S, Size.M, Size.L, Size.XL, Size.XXL],
       slug: 'chill_pullover_hoodie',
-      type: 'hoodies',
+      type: Type.HOODIES,
       tags: ['hoodie'],
       title: 'Chill Pullover Hoodie',
-      gender: 'unisex',
+      gender: Gender.UNISEX,
     },
     {
       description:
@@ -317,12 +303,12 @@ export const initialData: SeedData = {
       images: ['ekwirnmvdg2egqvlwldx.jpg', 'lyvnitudfzcxqakbzods.jpg'],
       stock: 100,
       price: 85,
-      sizes: ['XS', 'L', 'XL', 'XXL'],
+      sizes: [Size.XS, Size.L, Size.XL, Size.XXL],
       slug: 'men_chill_full_zip_hoodie',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Men's Chill Full Zip Hoodie",
-      gender: 'men',
+      gender: Gender.MEN,
     },
     {
       description:
@@ -330,12 +316,12 @@ export const initialData: SeedData = {
       images: ['tcqevtdme1enh7akfuao.jpg', 'ryieaxo7i9ub7sfkfa6y.jpg'],
       stock: 7,
       price: 85,
-      sizes: ['XS', 'S', 'M'],
+      sizes: [Size.XS, Size.S, Size.M],
       slug: 'men_chill_quarter_zip_pullover_-_gray',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Men's Chill Quarter Zip Pullover - Gray",
-      gender: 'men',
+      gender: Gender.MEN,
     },
     {
       description:
@@ -343,12 +329,12 @@ export const initialData: SeedData = {
       images: ['mhjn5tmbcvexhervvfiy.jpg', 'liwlagit1kklewbpwelf.jpg'],
       stock: 15,
       price: 85,
-      sizes: ['XS', 'S', 'M', 'L'],
+      sizes: [Size.XS, Size.S, Size.M, Size.L],
       slug: 'men_chill_quarter_zip_pullover_-_white',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Men's Chill Quarter Zip Pullover - White",
-      gender: 'men',
+      gender: Gender.MEN,
     },
     {
       description:
@@ -356,12 +342,12 @@ export const initialData: SeedData = {
       images: ['hmq1bj9k6h2opay10yxg.jpg', 'rjcjeffn0jc247dfbdre.jpg'],
       stock: 15,
       price: 70,
-      sizes: ['XS', 'S', 'XL', 'XXL'],
+      sizes: [Size.XS, Size.S, Size.XL, Size.XXL],
       slug: '3d_large_wordmark_pullover_hoodie',
-      type: 'hoodies',
+      type: Type.HOODIES,
       tags: ['hoodie'],
       title: '3D Large Wordmark Pullover Hoodie',
-      gender: 'unisex',
+      gender: Gender.UNISEX,
     },
     {
       description:
@@ -369,12 +355,12 @@ export const initialData: SeedData = {
       images: ['ormhegiv58arvfdivuc4.jpg', 'uvkwrwbmppitarmcw3rh.jpg'],
       stock: 13,
       price: 60,
-      sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+      sizes: [Size.XS, Size.S, Size.M, Size.L, Size.XL, Size.XXL],
       slug: 'cybertruck_graffiti_hoodie',
-      type: 'hoodies',
+      type: Type.HOODIES,
       tags: ['hoodie'],
       title: 'Cybertruck Graffiti Hoodie',
-      gender: 'unisex',
+      gender: Gender.UNISEX,
     },
     {
       description:
@@ -382,12 +368,12 @@ export const initialData: SeedData = {
       images: ['tauzsezzrzpero8mwwqs.jpg', 'ce01qilnaedkx5xebxu2.jpg'],
       stock: 11,
       price: 30,
-      sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+      sizes: [Size.XS, Size.S, Size.M, Size.L, Size.XL, Size.XXL],
       slug: 'relaxed_t_logo_hat',
-      type: 'hats',
+      type: Type.HATS,
       tags: ['hats'],
       title: 'Relaxed T Logo Hat',
-      gender: 'unisex',
+      gender: Gender.UNISEX,
     },
     {
       description:
@@ -395,12 +381,12 @@ export const initialData: SeedData = {
       images: ['xjsfsi4dmrnulzhmpdck.jpg', 'dtizift2tvhwsc1ib5g0.jpg'],
       stock: 13,
       price: 35,
-      sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+      sizes: [Size.XS, Size.S, Size.M, Size.L, Size.XL, Size.XXL],
       slug: 'thermal_cuffed_beanie',
-      type: 'hats',
+      type: Type.HATS,
       tags: ['hats'],
       title: 'Thermal Cuffed Beanie',
-      gender: 'unisex',
+      gender: Gender.UNISEX,
     },
     {
       description:
@@ -408,12 +394,12 @@ export const initialData: SeedData = {
       images: ['majbtc3jg6lp1s7fizlr.jpg', 'fomvyjwrhjetrxbtmwxg.jpg'],
       stock: 85,
       price: 225,
-      sizes: ['XS', 'S', 'M'],
+      sizes: [Size.XS, Size.S, Size.M],
       slug: 'women_cropped_puffer_jacket',
-      type: 'hoodies',
+      type: Type.HOODIES,
       tags: ['hoodie'],
       title: "Women's Cropped Puffer Jacket",
-      gender: 'women',
+      gender: Gender.WOMEN,
     },
     {
       description:
@@ -421,12 +407,12 @@ export const initialData: SeedData = {
       images: ['g7ticy6g6daltmhypjsq.jpg', 'yfihavvuwhf4ukpltrdt.jpg'],
       stock: 10,
       price: 130,
-      sizes: ['XS', 'S', 'M', 'XXL'],
+      sizes: [Size.XS, Size.S, Size.M, Size.XXL],
       slug: 'women_chill_half_zip_cropped_hoodie',
-      type: 'hoodies',
+      type: Type.HOODIES,
       tags: ['hoodie'],
       title: "Women's Chill Half Zip Cropped Hoodie",
-      gender: 'women',
+      gender: Gender.WOMEN,
     },
     {
       description:
@@ -434,12 +420,12 @@ export const initialData: SeedData = {
       images: ['gyltscxkpnfufgowvitp.jpg', 'nn1agtmktqeeksswrt2q.jpg'],
       stock: 9,
       price: 110,
-      sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+      sizes: [Size.XS, Size.S, Size.M, Size.L, Size.XL, Size.XXL],
       slug: 'women_raven_slouchy_crew_sweatshirt',
-      type: 'hoodies',
+      type: Type.HOODIES,
       tags: ['hoodie'],
       title: "Women's Raven Slouchy Crew Sweatshirt",
-      gender: 'women',
+      gender: Gender.WOMEN,
     },
     {
       description:
@@ -447,12 +433,12 @@ export const initialData: SeedData = {
       images: ['uenvzsvslyh6zput1al1.jpg', 'iglmfla08a4adgl2troa.jpg'],
       stock: 10,
       price: 45,
-      sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+      sizes: [Size.XS, Size.S, Size.M, Size.L, Size.XL, Size.XXL],
       slug: 'women_turbine_cropped_long_sleeve_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Women's Turbine Cropped Long Sleeve Tee",
-      gender: 'women',
+      gender: Gender.WOMEN,
     },
     {
       description:
@@ -460,12 +446,12 @@ export const initialData: SeedData = {
       images: ['xk6fkv2sngq57qeurjtq.jpg', 'mdmhkiq8umsjitedzdyq.jpg'],
       stock: 0,
       price: 40,
-      sizes: ['XS', 'S'],
+      sizes: [Size.XS, Size.S],
       slug: 'women_turbine_cropped_short_sleeve_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Women's Turbine Cropped Short Sleeve Tee",
-      gender: 'women',
+      gender: Gender.WOMEN,
     },
     {
       description:
@@ -473,12 +459,12 @@ export const initialData: SeedData = {
       images: ['h912rcukrejrf8c4tr5e.jpg', 'vsgqdeoz8epxcf2ljgiz.jpg'],
       stock: 30,
       price: 35,
-      sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+      sizes: [Size.XS, Size.S, Size.M, Size.L, Size.XL, Size.XXL],
       slug: 'women_t_logo_short_sleeve_scoop_neck_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Women's T Logo Short Sleeve Scoop Neck Tee",
-      gender: 'women',
+      gender: Gender.WOMEN,
     },
     {
       description:
@@ -486,12 +472,12 @@ export const initialData: SeedData = {
       images: ['uv81i1cgjkogzzdqmopa.jpg', 'xszdxwh2ggggcwkczgg6.jpg'],
       stock: 16,
       price: 40,
-      sizes: ['XS', 'S', 'L', 'XL', 'XXL'],
+      sizes: [Size.XS, Size.S, Size.L, Size.XL, Size.XXL],
       slug: 'women_t_logo_long_sleeve_scoop_neck_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Women's T Logo Long Sleeve Scoop Neck Tee",
-      gender: 'women',
+      gender: Gender.WOMEN,
     },
     {
       description:
@@ -499,12 +485,12 @@ export const initialData: SeedData = {
       images: ['x3cgvdtqht9xlh00pw9x.jpg', 'a2z1infka9nz9ujqy42h.jpg'],
       stock: 18,
       price: 35,
-      sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+      sizes: [Size.XS, Size.S, Size.M, Size.L, Size.XL, Size.XXL],
       slug: 'women_small_wordmark_short_sleeve_v-neck_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Women's Small Wordmark Short Sleeve V-Neck Tee",
-      gender: 'women',
+      gender: Gender.WOMEN,
     },
     {
       description:
@@ -512,12 +498,12 @@ export const initialData: SeedData = {
       images: ['iftectnwkkccvx6oj3h2.jpg', 'isfcih9jcdd4fh0wcym1.jpg'],
       stock: 5,
       price: 35,
-      sizes: ['XL', 'XXL'],
+      sizes: [Size.XL, Size.XXL],
       slug: 'women_large_wordmark_short_sleeve_crew_neck_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Women's Large Wordmark Short Sleeve Crew Neck Tee",
-      gender: 'women',
+      gender: Gender.WOMEN,
     },
     {
       description:
@@ -525,12 +511,12 @@ export const initialData: SeedData = {
       images: ['bg6xp5vkxwjgqquqapad.jpg', 'rtilqsounmqzaxgqo3t9.jpg'],
       stock: 16,
       price: 35,
-      sizes: ['S', 'M'],
+      sizes: [Size.S, Size.M],
       slug: 'women_plaid_mode_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Women's Plaid Mode Tee",
-      gender: 'women',
+      gender: Gender.WOMEN,
     },
     {
       description:
@@ -538,12 +524,12 @@ export const initialData: SeedData = {
       images: ['ndh9yh8zbwhajzmvv2so.jpg', 't9ehknmswn33gogqbl9d.jpg'],
       stock: 10,
       price: 130,
-      sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+      sizes: [Size.XS, Size.S, Size.M, Size.L, Size.XL, Size.XXL],
       slug: 'women_powerwall_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: 'Women’s Powerwall Tee',
-      gender: 'women',
+      gender: Gender.WOMEN,
     },
     {
       description:
@@ -551,12 +537,12 @@ export const initialData: SeedData = {
       images: ['tkjphglbok6ynfwyo4ym.jpg', 'yytegy5iab2ahtbfwrsy.jpg'],
       stock: 3,
       price: 90,
-      sizes: ['M', 'L', 'XL', 'XXL'],
+      sizes: [Size.M, Size.L, Size.XL, Size.XXL],
       slug: 'women_corp_jacket',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Women's Corp Jacket",
-      gender: 'women',
+      gender: Gender.WOMEN,
     },
     {
       description:
@@ -564,12 +550,12 @@ export const initialData: SeedData = {
       images: ['z4u3pinzgbmmqrmjwtil.jpg', 'gi1nsepqp9pz6qy2jk4r.jpg'],
       stock: 162,
       price: 100,
-      sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+      sizes: [Size.XS, Size.S, Size.M, Size.L, Size.XL, Size.XXL],
       slug: 'women_raven_joggers',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: "Women's Raven Joggers",
-      gender: 'women',
+      gender: Gender.WOMEN,
     },
     {
       description:
@@ -577,12 +563,12 @@ export const initialData: SeedData = {
       images: ['uih2nqskgmvf2essrgx5.jpg', 'dqaogzjibh3puuhnaov5.jpg'],
       stock: 10,
       price: 30,
-      sizes: ['XS', 'S', 'M'],
+      sizes: [Size.XS, Size.S, Size.M],
       slug: 'kids_cybertruck_long_sleeve_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: 'Kids Cybertruck Long Sleeve Tee',
-      gender: 'kid',
+      gender: Gender.KID,
     },
     {
       description:
@@ -590,12 +576,12 @@ export const initialData: SeedData = {
       images: ['tdflfa4jjkrpyth2b6of.jpg', 'wnkgp1fspnmotdl1f9qb.jpg'],
       stock: 0,
       price: 25,
-      sizes: ['XS', 'S', 'M'],
+      sizes: [Size.XS, Size.S, Size.M],
       slug: 'kids_scribble_t_logo_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: 'Kids Scribble T Logo Tee',
-      gender: 'kid',
+      gender: Gender.KID,
     },
     {
       description:
@@ -603,12 +589,12 @@ export const initialData: SeedData = {
       images: ['o5jt1kij2wziqqyynmu7.jpg', 'qmzeyjgch7yo2a9xzrco.jpg'],
       stock: 10,
       price: 25,
-      sizes: ['XS', 'S', 'M'],
+      sizes: [Size.XS, Size.S, Size.M],
       slug: 'kids_cybertruck_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: 'Kids Cybertruck Tee',
-      gender: 'kid',
+      gender: Gender.KID,
     },
     {
       description:
@@ -616,12 +602,12 @@ export const initialData: SeedData = {
       images: ['s3nm5saoxwdpaekyr7ek.jpg', 'luje1k8ygfydqkfgm7fk.jpg'],
       stock: 10,
       price: 30,
-      sizes: ['XS', 'S', 'M'],
+      sizes: [Size.XS, Size.S, Size.M],
       slug: 'kids_racing_stripe_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: 'Kids Racing Stripe Tee',
-      gender: 'kid',
+      gender: Gender.KID,
     },
     {
       description:
@@ -629,12 +615,12 @@ export const initialData: SeedData = {
       images: ['rapn0tpv33kyhkp1nbuu.jpg', 'tqkfl7tawdk7xxtnqxbr.jpg'],
       stock: 10,
       price: 30,
-      sizes: ['XS', 'S', 'M'],
+      sizes: [Size.XS, Size.S, Size.M],
       slug: 'kids_3d_t_logo_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: 'Kids 3D T Logo Tee',
-      gender: 'kid',
+      gender: Gender.KID,
     },
     {
       description:
@@ -642,12 +628,12 @@ export const initialData: SeedData = {
       images: ['orstfpjo1ucjhahpqqlx.jpg', 'zhzu86uicqefwdb5uxco.jpg'],
       stock: 10,
       price: 30,
-      sizes: ['XS', 'S', 'M'],
+      sizes: [Size.XS, Size.S, Size.M],
       slug: 'kids_checkered_tee',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: 'Kids Checkered Tee',
-      gender: 'kid',
+      gender: Gender.KID,
     },
     {
       description:
@@ -655,12 +641,12 @@ export const initialData: SeedData = {
       images: ['bfbpinshm5fyp5hzhtf7.jpg', 'v4p2ededuzd8ew96f6so.jpg'],
       stock: 16,
       price: 25,
-      sizes: ['XS', 'S'],
+      sizes: [Size.XS, Size.S],
       slug: 'made_on_earth_by_humans_onesie',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: 'Made on Earth by Humans Onesie',
-      gender: 'kid',
+      gender: Gender.KID,
     },
     {
       description:
@@ -668,12 +654,12 @@ export const initialData: SeedData = {
       images: ['hreel3iswmtkvua2gv7v.jpg', 'zpzcycnfekxdnej6uw2s.jpg'],
       stock: 0,
       price: 30,
-      sizes: ['XS', 'S'],
+      sizes: [Size.XS, Size.S],
       slug: 'scribble_t_logo_onesie',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: 'Scribble T Logo Onesie',
-      gender: 'kid',
+      gender: Gender.KID,
     },
     {
       description:
@@ -681,12 +667,12 @@ export const initialData: SeedData = {
       images: ['jubtrhpjdjtqifqrfeuf.jpg', 'tpwkiy6wuqv8bzdqihgo.jpg'],
       stock: 10,
       price: 30,
-      sizes: ['XS', 'S'],
+      sizes: [Size.XS, Size.S],
       slug: 'zero_emissions_(almost)_onesie',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: 'Zero Emissions (Almost) Onesie',
-      gender: 'kid',
+      gender: Gender.KID,
     },
     {
       description:
@@ -694,12 +680,12 @@ export const initialData: SeedData = {
       images: ['tulwwvm8dvoswhvu39l8.jpg', 'ezl7cgvslsg03mhdf1bt.jpg'],
       stock: 10,
       price: 65,
-      sizes: ['XS', 'S', 'M'],
+      sizes: [Size.XS, Size.S, Size.M],
       slug: 'kids_cyberquad_bomber_jacket',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: 'Kids Cyberquad Bomber Jacket',
-      gender: 'kid',
+      gender: Gender.KID,
     },
     {
       description:
@@ -707,12 +693,12 @@ export const initialData: SeedData = {
       images: ['crere1lkjuxjhgfgvdif.jpg', 'isxtmwtwrkrxir5c39to.jpg'],
       stock: 10,
       price: 30,
-      sizes: ['XS', 'S', 'M'],
+      sizes: [Size.XS, Size.S, Size.M],
       slug: 'kids_corp_jacket',
-      type: 'shirts',
+      type: Type.SHIRTS,
       tags: ['shirt'],
       title: 'Kids Corp Jacket',
-      gender: 'kid',
+      gender: Gender.KID,
     },
   ],
 };
