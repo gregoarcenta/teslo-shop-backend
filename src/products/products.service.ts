@@ -56,7 +56,7 @@ export class ProductsService {
     let product: Product;
     try {
       product = await this.productRepository.findOne({
-        where: [{ id }, { title: ILike(`%${term}%`) }, { slug: term }],
+        where: [{ id }, { title: ILike(term) }, { slug: term }],
       });
     } catch (err) {
       this.handlerException.handlerDBException(err);

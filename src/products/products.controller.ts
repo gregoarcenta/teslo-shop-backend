@@ -15,7 +15,12 @@ import { Auth, GetUser } from '../auth/decorators';
 import { Role } from '../config';
 import { User } from '../auth/entities/user.entity';
 import { ApiTags } from '@nestjs/swagger';
-import { ApiCreateResponse } from '../swagger/decorators/products';
+import {
+  ApiCreateResponse,
+  ApiFindOneResponse,
+  ApiRemoveResponse,
+  ApiUpdateResponse,
+} from '../swagger/decorators/products';
 
 @ApiTags('Products')
 @Controller('products')
@@ -35,12 +40,14 @@ export class ProductsController {
   }
 
   @Get(':term')
+  @ApiFindOneResponse()
   findOne(@Param('term') term: string) {
     return this.productsService.findOne(term);
   }
 
   @Patch(':id')
   @Auth(Role.ADMIN)
+  @ApiUpdateResponse()
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateProductDto: UpdateProductDto,
@@ -51,6 +58,7 @@ export class ProductsController {
 
   @Delete(':id')
   @Auth(Role.ADMIN)
+  @ApiRemoveResponse()
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.productsService.remove(id);
   }
