@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmConfigService, validationSchema } from './config';
 import { SeedModule } from './seed/seed.module';
 import { ProductsModule } from './products/products.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { ProductsModule } from './products/products.module';
     AuthModule,
     SeedModule,
     ProductsModule,
+    FilesModule,
   ],
 })
 export class AppModule {}
