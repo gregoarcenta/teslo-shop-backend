@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { Auth, GetUser } from '../auth/decorators';
@@ -22,9 +23,11 @@ import {
   ApiUpdateResponse,
 } from '../swagger/decorators/products';
 import { CreateProductDto, PaginateProductDto, UpdateProductDto } from './dto';
+import { ApiResponseInterceptor } from '../common/interceptors/api-response/api-response.interceptor';
 
 @ApiTags('Products')
 @Controller('products')
+@UseInterceptors(ApiResponseInterceptor)
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 

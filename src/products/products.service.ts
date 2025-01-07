@@ -30,7 +30,7 @@ export class ProductsService {
   async create(
     createProductDto: CreateProductDto,
     createdBy: User,
-  ): Promise<ProductResponseDto> {
+  ): Promise<{ message: string; data: ProductResponseDto }> {
     // Build product with images
     const productDto = this.buildCreateDtoWithImages(createProductDto);
 
@@ -43,7 +43,10 @@ export class ProductsService {
         createdBy,
       });
       await this.productRepository.save(product);
-      return this.findOne(product.id);
+      return {
+        message: 'Producto creado con éxito',
+        data: await this.findOne(product.id),
+      };
     } catch (err) {
       this.handlerException.handlerDBException(err);
     }
@@ -134,11 +137,11 @@ export class ProductsService {
     }
   }
 
-  async remove(id: string): Promise<string> {
+  async remove(id: string) {
     const product = await this.findOne(id);
     try {
       await this.productRepository.delete(product.id);
-      return `Product ${product.title} has been removed`;
+      return { message: `Product ${product.title} has been removed` };
     } catch (err) {
       this.handlerException.handlerDBException(err);
     }

@@ -21,6 +21,7 @@ import {
   ApiGetImageResponse,
   ApiUploadImageResponse,
 } from '../swagger/decorators/files';
+import { ApiResponseInterceptor } from '../common/interceptors/api-response/api-response.interceptor';
 
 @ApiTags('Files')
 @Controller('files')
@@ -29,7 +30,7 @@ export class FilesController {
 
   @Post('product/image')
   @Auth(Role.ADMIN)
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(FileInterceptor('image'), ApiResponseInterceptor)
   @ApiUploadImageResponse()
   uploadImage(
     @UploadedFile(
@@ -52,6 +53,7 @@ export class FilesController {
 
   @Delete('product/image/:id')
   @Auth(Role.ADMIN)
+  @UseInterceptors(ApiResponseInterceptor)
   @ApiDeleteImageResponse()
   deleteImage(@Param('id') id: string) {
     return this.filesService.deleteImage(id);

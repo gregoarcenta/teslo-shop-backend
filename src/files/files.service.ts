@@ -31,14 +31,14 @@ export class FilesService {
     }
   }
 
-  async deleteImage(id: string) {
+  async deleteImage(id: string): Promise<{ message: string }> {
     try {
       await this.cloudinaryService.deleteImage(id);
-      return `The image with the id: ${id} was removed`;
+      return { message: `The image with the id: ${id} was removed` };
     } catch (err) {
       this.logger.error(err.message);
 
-      if (err instanceof NotFoundException) return err.getResponse();
+      if (err instanceof NotFoundException) throw err;
 
       throw new InternalServerErrorException("The image couldn't be deleted.");
     }
