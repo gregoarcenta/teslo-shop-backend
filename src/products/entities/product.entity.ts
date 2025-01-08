@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -92,12 +93,13 @@ export class Product {
   images: ProductImage[];
 
   @ManyToOne(() => User, (user) => user.products, { eager: true })
+  @JoinColumn({ name: 'created_by' })
   createdBy: User;
 
-  @CreateDateColumn({ type: 'timestamptz' })
   @ApiProperty({
     description: 'Product created at',
     example: '2024-11-08T22:51:11.862Z',
   })
-  created_at: Date;
+  @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
+  createdAt: Date;
 }
