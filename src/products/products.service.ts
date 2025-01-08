@@ -59,7 +59,7 @@ export class ProductsService {
       const products = await this.productRepository.find({
         take: paginate.limit,
         skip: paginate.offset,
-        order: { created_at: 'DESC' },
+        order: { createdAt: 'DESC' },
       });
 
       return products.map(({ images, ...productProperties }) => ({

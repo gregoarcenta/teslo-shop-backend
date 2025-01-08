@@ -163,7 +163,7 @@ describe('ProductsService', () => {
     expect(mockProductRepository.find).toHaveBeenCalledWith({
       take: paginate.limit,
       skip: paginate.offset,
-      order: { created_at: 'DESC' },
+      order: { createdAt: 'DESC' },
     });
   });
 
