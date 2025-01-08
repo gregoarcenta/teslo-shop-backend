@@ -34,7 +34,6 @@ describe('CloudinaryService', () => {
   });
 
   it('should upload an image successfully', async () => {
-    // Simulamos la respuesta exitosa de Cloudinary
     const mockUploadResponse: any = {
       public_id: 'sample_public_id',
       format: 'jpg',
@@ -42,14 +41,12 @@ describe('CloudinaryService', () => {
         'https://res.cloudinary.com/demo/image/upload/v1234567890/sample.jpg',
     };
 
-    // Aquí estamos simulando que Cloudinary sube la imagen y nos da la respuesta mockeada
     (cloudinary.uploader.upload_stream as jest.Mock).mockImplementationOnce(
       (callback) => {
-        callback(null, mockUploadResponse); // Simula respuesta exitosa
+        callback(null, mockUploadResponse);
       },
     );
 
-    // Simulamos un archivo
     const file: Express.Multer.File = {
       buffer: Buffer.from('sample file content'),
       originalname: 'test.jpg',
@@ -57,7 +54,6 @@ describe('CloudinaryService', () => {
 
     const result = await cloudinaryService.uploadImage(file);
 
-    // Comprobamos que el resultado es el esperado
     expect(result).toEqual({ public_id: 'sample_public_id', format: 'jpg' });
     expect(cloudinary.uploader.upload_stream).toHaveBeenCalledTimes(1);
   });
