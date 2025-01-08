@@ -25,7 +25,7 @@ export class Cart {
     description: 'Cart user',
     type: User,
   })
-  @OneToOne(() => User)
+  @OneToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
 

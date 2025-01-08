@@ -4,6 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -17,6 +18,7 @@ export class AuthService {
   constructor(
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
     private readonly handlerException: HandlerException,
+    private eventEmitter: EventEmitter2,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -31,6 +33,8 @@ export class AuthService {
     } catch (err) {
       this.handlerException.handlerDBException(err);
     }
+
+    this.eventEmitter.emit('user.created', user);
 
     return {
       user: await this.findUser(user.id),
