@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
   Patch,
   Post,
   UseGuards,
@@ -15,6 +14,7 @@ import { ApiResponseInterceptor } from '../common/interceptors/api-response/api-
 import { Auth, GetUser } from '../auth/decorators';
 import { CartProductDto } from './dto/cart-product.dto';
 import { ValidateCartAndProductGuard } from '../common/guards/validate-cart-and-product/validate-cart-and-product.guard';
+import { CartProductUpdateDto } from './dto/cart-product-update.dto';
 
 @ApiTags('Cart')
 @Controller('cart')
@@ -42,8 +42,10 @@ export class CartController {
   }
 
   @Patch('item')
-  updateQuantity(@Param('id') id: string) {
-    return this.cartService.updateProductQuantity(+id);
+  @UseGuards(ValidateCartAndProductGuard)
+  @Auth()
+  updateQuantity(@Body() cartProductUpdateDto: CartProductUpdateDto) {
+    return this.cartService.updateProductQuantity(cartProductUpdateDto);
   }
 
   @Delete('item')

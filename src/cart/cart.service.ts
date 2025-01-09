@@ -13,6 +13,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { CartItem } from './entities/cart-item.entity';
 import { CartProductDto } from './dto/cart-product.dto';
 import { CartItemResponseDto } from './dto/cart-item-response.dto';
+import { CartProductUpdateDto } from './dto/cart-product-update.dto';
 
 @Injectable()
 export class CartService {
@@ -108,8 +109,23 @@ export class CartService {
     }
   }
 
-  updateProductQuantity(id: number) {
-    return `This action updates a #${id} cart`;
+  async updateProductQuantity(
+    cartProductUpdateDto: CartProductUpdateDto,
+  ): Promise<CartItemResponseDto> {
+    const { cartId, productId, quantity } = cartProductUpdateDto;
+
+    const cartItem = await this.cartItemRepository.findOne({
+      where: { cart: { id: cartId }, product: { id: productId } },
+    });
+
+    if (!cartItem) {
+      throw new NotFoundException('Product not found in cart');
+    }
+
+    cartItem.quantity = quantity;
+    await this.cartItemRepository.save(cartItem);
+
+    return this.plainCartItem(cartItem);
   }
 
   async removeProductsFromCart(
