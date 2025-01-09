@@ -8,8 +8,8 @@ import { Product, ProductImage } from './entities';
 
 @Module({
   controllers: [ProductsController],
-  imports: [AuthModule, TypeOrmModule.forFeature([Product, ProductImage])],
   providers: [ProductsService, HandlerException],
-  exports: [ProductsService],
+  imports: [AuthModule, TypeOrmModule.forFeature([Product, ProductImage])],
+  exports: [ProductsService, TypeOrmModule],
 })
 export class ProductsModule {}
