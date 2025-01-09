@@ -1,5 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { UpdateCartDto } from './dto/update-cart.dto';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { CartResponseDto } from './dto/cart-response.dto';
 import { User } from '../auth/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cart } from './entities/cart.entity';
@@ -8,6 +12,7 @@ import { HandlerException } from '../common/exceptions/handler.exception';
 import { OnEvent } from '@nestjs/event-emitter';
 import { CartItem } from './entities/cart-item.entity';
 import { AddProductToCartDto } from './dto/add-product-to-cart.dto';
+import { CartItemResponseDto } from './dto/cart-item-response.dto';
 
 @Injectable()
 export class CartService {
@@ -38,7 +43,7 @@ export class CartService {
 
   async addProductToCart(
     addProductToCartDto: AddProductToCartDto,
-  ): Promise<{ message: string; data: CartItem }> {
+  ): Promise<{ message: string; data: CartItemResponseDto }> {
     const { cartId, productId } = addProductToCartDto;
 
     try {
@@ -54,7 +59,7 @@ export class CartService {
         await this.cartItemRepository.save(cartItem);
         return {
           message: 'Product added to cart',
-          data: cartItem,
+          data: this.plainCartItem(cartItem),
         };
       }
 
@@ -67,26 +72,59 @@ export class CartService {
 
       return {
         message: 'Product added to cart',
-        data: newCartItem,
+        data: this.plainCartItem(newCartItem),
       };
     } catch (err) {
       this.handlerException.handlerDBException(err);
     }
   }
 
-  findAll() {
-    return `This action returns all cart`;
+  async getCart(user: User): Promise<CartResponseDto> {
+    const cart = await this.cartRepository.findOne({
+      where: { user: { id: user.id } },
+    });
+
+    if (!cart) {
+      throw new NotFoundException('Cart not found');
+    }
+
+    const total = cart.cartItems.reduce(
+      (sum, item) => sum + item.quantity * item.product.price,
+      0,
+    );
+
+    return this.plainCart(cart, total);
   }
 
   findOne(id: number) {
     return `This action returns a #${id} cart`;
   }
 
-  update(id: number, updateCartDto: UpdateCartDto) {
+  update(id: number, updateCartDto: CartResponseDto) {
     return `This action updates a #${id} cart`;
   }
 
   remove(id: number) {
     return `This action removes a #${id} cart`;
+  }
+
+  private plainCart(cart: Cart, total: number): CartResponseDto {
+    return {
+      id: cart.id,
+      total,
+      cartItems: cart.cartItems.map((item) => this.plainCartItem(item)),
+    };
+  }
+
+  private plainCartItem(cartItem: CartItem): CartItemResponseDto {
+    return {
+      id: cartItem.id,
+      quantity: cartItem.quantity,
+      product: {
+        ...cartItem.product,
+        createdBy: cartItem.product.createdBy.fullName,
+        images: cartItem.product.images.map((img) => img.name),
+      },
+    };
   }
 }

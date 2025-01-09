@@ -10,18 +10,30 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { CartService } from './cart.service';
-import { UpdateCartDto } from './dto/update-cart.dto';
+import { CartResponseDto } from './dto/cart-response.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiResponseInterceptor } from '../common/interceptors/api-response/api-response.interceptor';
-import { Auth } from '../auth/decorators';
+import { Auth, GetUser } from '../auth/decorators';
 import { AddProductToCartDto } from './dto/add-product-to-cart.dto';
 import { ValidateCartAndProductGuard } from '../common/guards/validate-cart-and-product/validate-cart-and-product.guard';
+import { User } from '../auth/entities/user.entity';
 
 @ApiTags('Cart')
 @Controller('cart')
 @UseInterceptors(ApiResponseInterceptor)
 export class CartController {
   constructor(private readonly cartService: CartService) {}
+
+  @Get()
+  @Auth()
+  getCart(@GetUser() user: User) {
+    return this.cartService.getCart(user);
+  }
+
+  @Delete()
+  clearCart(@Param('id') id: string) {
+    return this.cartService.remove(+id);
+  }
 
   @Post('item')
   @UseGuards(ValidateCartAndProductGuard)
@@ -30,23 +42,21 @@ export class CartController {
     return this.cartService.addProductToCart(addProductToCartDto);
   }
 
-  @Get()
-  findAll() {
-    return this.cartService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Patch('item')
+  updateQuantity(@Param('id') id: string) {
     return this.cartService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCartDto: UpdateCartDto) {
-    return this.cartService.update(+id, updateCartDto);
+  @Delete('item')
+  decreaseQuantity(@Param('id') id: string) {
+    return this.cartService.findOne(+id);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.cartService.remove(+id);
+  @Delete('item')
+  removeProductFromCart(
+    @Param('id') id: string,
+    @Body() updateCartDto: CartResponseDto,
+  ) {
+    return this.cartService.update(+id, updateCartDto);
   }
 }
