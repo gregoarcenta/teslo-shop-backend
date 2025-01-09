@@ -10,13 +10,11 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { CartService } from './cart.service';
-import { CartResponseDto } from './dto/cart-response.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiResponseInterceptor } from '../common/interceptors/api-response/api-response.interceptor';
 import { Auth, GetUser } from '../auth/decorators';
-import { AddProductToCartDto } from './dto/add-product-to-cart.dto';
+import { CartProductDto } from './dto/cart-product.dto';
 import { ValidateCartAndProductGuard } from '../common/guards/validate-cart-and-product/validate-cart-and-product.guard';
-import { User } from '../auth/entities/user.entity';
 
 @ApiTags('Cart')
 @Controller('cart')
@@ -26,37 +24,32 @@ export class CartController {
 
   @Get()
   @Auth()
-  getCart(@GetUser() user: User) {
-    return this.cartService.getCart(user);
+  getCart(@GetUser('id') userId: string) {
+    return this.cartService.getCart(userId);
   }
 
   @Delete()
-  clearCart(@Param('id') id: string) {
-    return this.cartService.remove(+id);
+  @Auth()
+  clearCart(@GetUser('id') userId: string) {
+    return this.cartService.clearCart(userId);
   }
 
   @Post('item')
   @UseGuards(ValidateCartAndProductGuard)
   @Auth()
-  addProductToCart(@Body() addProductToCartDto: AddProductToCartDto) {
-    return this.cartService.addProductToCart(addProductToCartDto);
+  addProductToCart(@Body() cartProductDto: CartProductDto) {
+    return this.cartService.addProductToCart(cartProductDto);
   }
 
   @Patch('item')
   updateQuantity(@Param('id') id: string) {
-    return this.cartService.findOne(+id);
+    return this.cartService.updateProductQuantity(+id);
   }
 
   @Delete('item')
-  decreaseQuantity(@Param('id') id: string) {
-    return this.cartService.findOne(+id);
-  }
-
-  @Delete('item')
-  removeProductFromCart(
-    @Param('id') id: string,
-    @Body() updateCartDto: CartResponseDto,
-  ) {
-    return this.cartService.update(+id, updateCartDto);
+  @UseGuards(ValidateCartAndProductGuard)
+  @Auth()
+  removeProductsFromCart(@Body() @Body() cartProductDto: CartProductDto) {
+    return this.cartService.removeProductsFromCart(cartProductDto);
   }
 }

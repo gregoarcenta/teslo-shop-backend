@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cart } from '../../../cart/entities/cart.entity';
 import { Repository } from 'typeorm';
-import { AddProductToCartDto } from '../../../cart/dto/add-product-to-cart.dto';
+import { CartProductDto } from '../../../cart/dto/cart-product.dto';
 import { HandlerException } from '../../exceptions/handler.exception';
 import { Product } from '../../../products/entities';
 
@@ -25,7 +25,7 @@ export class ValidateCartAndProductGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const req = context.switchToHttp().getRequest();
-    const { cartId, productId } = req.body as AddProductToCartDto;
+    const { cartId, productId } = req.body as CartProductDto;
     const { id: userId } = req.user;
 
     return this.cartRepository

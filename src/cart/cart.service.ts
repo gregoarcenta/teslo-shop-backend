@@ -11,7 +11,7 @@ import { Repository } from 'typeorm';
 import { HandlerException } from '../common/exceptions/handler.exception';
 import { OnEvent } from '@nestjs/event-emitter';
 import { CartItem } from './entities/cart-item.entity';
-import { AddProductToCartDto } from './dto/add-product-to-cart.dto';
+import { CartProductDto } from './dto/cart-product.dto';
 import { CartItemResponseDto } from './dto/cart-item-response.dto';
 
 @Injectable()
@@ -30,7 +30,6 @@ export class CartService {
     });
     try {
       await this.cartRepository.save(cart);
-      console.log('Se ha creado el carrito con exito');
     } catch (err) {
       if (err.code === '23505') {
         throw new BadRequestException(
@@ -41,47 +40,9 @@ export class CartService {
     }
   }
 
-  async addProductToCart(
-    addProductToCartDto: AddProductToCartDto,
-  ): Promise<{ message: string; data: CartItemResponseDto }> {
-    const { cartId, productId } = addProductToCartDto;
-
-    try {
-      const cartItem = await this.cartItemRepository.findOne({
-        where: {
-          cart: { id: cartId },
-          product: { id: addProductToCartDto.productId },
-        },
-      });
-
-      if (cartItem) {
-        cartItem.quantity += 1;
-        await this.cartItemRepository.save(cartItem);
-        return {
-          message: 'Product added to cart',
-          data: this.plainCartItem(cartItem),
-        };
-      }
-
-      const newCartItem = this.cartItemRepository.create({
-        cart: { id: cartId },
-        product: { id: productId },
-      });
-
-      await this.cartItemRepository.save(newCartItem);
-
-      return {
-        message: 'Product added to cart',
-        data: this.plainCartItem(newCartItem),
-      };
-    } catch (err) {
-      this.handlerException.handlerDBException(err);
-    }
-  }
-
-  async getCart(user: User): Promise<CartResponseDto> {
+  async getCart(userId: string): Promise<CartResponseDto> {
     const cart = await this.cartRepository.findOne({
-      where: { user: { id: user.id } },
+      where: { user: { id: userId } },
     });
 
     if (!cart) {
@@ -96,16 +57,80 @@ export class CartService {
     return this.plainCart(cart, total);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} cart`;
+  async clearCart(userId: string): Promise<{ message: string }> {
+    try {
+      const cart = await this.cartRepository.findOne({
+        where: { user: { id: userId } },
+      });
+      await this.cartItemRepository.remove(cart.cartItems);
+      return { message: 'Carts cleared' };
+    } catch (err) {
+      this.handlerException.handlerDBException(err);
+    }
   }
 
-  update(id: number, updateCartDto: CartResponseDto) {
+  async addProductToCart(
+    cartProductDto: CartProductDto,
+  ): Promise<{ message: string; data: CartItemResponseDto }> {
+    const { cartId, productId } = cartProductDto;
+
+    try {
+      const cartItem = await this.cartItemRepository.findOne({
+        where: { cart: { id: cartId }, product: { id: productId } },
+      });
+
+      if (cartItem) {
+        cartItem.quantity += 1;
+        await this.cartItemRepository.save(cartItem);
+        return {
+          message: 'Product added to cart',
+          data: this.plainCartItem(cartItem),
+        };
+      }
+
+      let newCartItem = this.cartItemRepository.create({
+        cart: { id: cartId },
+        product: { id: productId },
+      });
+
+      await this.cartItemRepository.save(newCartItem);
+
+      newCartItem = await this.cartItemRepository.findOne({
+        where: { id: newCartItem.id },
+      });
+
+      return {
+        message: 'Product added to cart',
+        data: this.plainCartItem(newCartItem),
+      };
+    } catch (err) {
+      this.handlerException.handlerDBException(err);
+    }
+  }
+
+  updateProductQuantity(id: number) {
     return `This action updates a #${id} cart`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} cart`;
+  async removeProductsFromCart(
+    cartProductDto: CartProductDto,
+  ): Promise<{ message: string }> {
+    const { cartId, productId } = cartProductDto;
+    const cartItem = await this.cartItemRepository.findOne({
+      where: { cart: { id: cartId }, product: { id: productId } },
+    });
+
+    if (!cartItem) {
+      throw new NotFoundException('Product not found in the cart');
+    }
+
+    try {
+      await this.cartItemRepository.remove(cartItem);
+    } catch (err) {
+      this.handlerException.handlerDBException(err);
+    }
+
+    return { message: 'Product removed from cart' };
   }
 
   private plainCart(cart: Cart, total: number): CartResponseDto {
