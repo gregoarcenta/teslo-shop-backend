@@ -12,9 +12,8 @@ import { CartService } from './cart.service';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiResponseInterceptor } from '../common/interceptors/api-response/api-response.interceptor';
 import { Auth, GetUser } from '../auth/decorators';
-import { CartProductDto } from './dto/cart-product.dto';
 import { ValidateCartAndProductGuard } from '../common/guards/validate-cart-and-product/validate-cart-and-product.guard';
-import { CartProductUpdateDto } from './dto/cart-product-update.dto';
+import { CartProductDto, CartProductUpdateDto } from './dto';
 
 @ApiTags('Cart')
 @Controller('cart')

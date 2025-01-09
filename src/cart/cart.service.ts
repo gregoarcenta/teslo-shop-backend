@@ -3,17 +3,18 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CartResponseDto } from './dto/cart-response.dto';
 import { User } from '../auth/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Cart } from './entities/cart.entity';
 import { Repository } from 'typeorm';
 import { HandlerException } from '../common/exceptions/handler.exception';
 import { OnEvent } from '@nestjs/event-emitter';
-import { CartItem } from './entities/cart-item.entity';
-import { CartProductDto } from './dto/cart-product.dto';
-import { CartItemResponseDto } from './dto/cart-item-response.dto';
-import { CartProductUpdateDto } from './dto/cart-product-update.dto';
+import { Cart, CartItem } from './entities';
+import {
+  CartItemResponseDto,
+  CartProductDto,
+  CartProductUpdateDto,
+  CartResponseDto,
+} from './dto';
 
 @Injectable()
 export class CartService {

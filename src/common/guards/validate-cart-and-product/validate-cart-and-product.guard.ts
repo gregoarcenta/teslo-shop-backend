@@ -6,11 +6,11 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Cart } from '../../../cart/entities/cart.entity';
 import { Repository } from 'typeorm';
-import { CartProductDto } from '../../../cart/dto/cart-product.dto';
 import { HandlerException } from '../../exceptions/handler.exception';
 import { Product } from '../../../products/entities';
+import { Cart } from '../../../cart/entities';
+import { CartProductDto } from '../../../cart/dto';
 
 @Injectable()
 export class ValidateCartAndProductGuard implements CanActivate {

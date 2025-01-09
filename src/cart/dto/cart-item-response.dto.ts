@@ -1,6 +1,6 @@
 import { PickType } from '@nestjs/swagger';
-import { CartItem } from '../entities/cart-item.entity';
 import { ProductResponseDto } from '../../products/dto';
+import { CartItem } from '../entities';
 
 export class CartItemResponseDto extends PickType(CartItem, [
   'id',
