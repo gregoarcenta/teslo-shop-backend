@@ -171,7 +171,7 @@ describe('ProductsService', () => {
     const term = 'nonexistent';
     mockProductRepository.findOne.mockResolvedValue(null);
 
-    await expect(service.findOne(term)).rejects.toThrowError(
+    await expect(service.findOne(term)).rejects.toThrow(
       new NotFoundException(`Product ${term} not found`),
     );
   });
@@ -226,9 +226,7 @@ describe('ProductsService', () => {
 
     mockProductRepository.preload.mockResolvedValue(null);
 
-    await expect(
-      service.update(id, updateProductDto, user),
-    ).rejects.toThrowError(
+    await expect(service.update(id, updateProductDto, user)).rejects.toThrow(
       new NotFoundException(`Product with id: ${id} not found`),
     );
   });
@@ -254,7 +252,7 @@ describe('ProductsService', () => {
 
     mockProductRepository.findOne.mockResolvedValue(null);
 
-    await expect(service.remove(id)).rejects.toThrowError(
+    await expect(service.remove(id)).rejects.toThrow(
       new NotFoundException(`Product ${id} not found`),
     );
   });
