@@ -62,20 +62,22 @@ export class Product {
   @Column({ type: 'int', default: 0 })
   stock: number;
 
-  @ApiProperty({ description: 'Product type', example: 'shirts' })
+  @ApiProperty({ description: 'Product type', enum: Type })
   @Column({ type: 'enum', enum: Type })
   type: Type;
 
-  @ApiProperty({ description: 'Product gender', example: 'men' })
+  @ApiProperty({ description: 'Product gender', enum: Gender })
   @Column({ type: 'enum', enum: Gender })
   gender: Gender;
 
-  @ApiProperty({ example: ['M', 'XL', 'XXL'], description: 'Product sizes' })
+  @ApiProperty({ description: 'Product sizes', enum: Size, isArray: true })
   @Column({ type: 'enum', enum: Size, array: true })
   sizes: Size[];
 
   @ApiProperty({
     description: 'Product tags',
+    isArray: true,
+    type: 'string',
     example: ['shirt'],
     default: [],
   })

@@ -129,7 +129,7 @@ export class CartService {
     return this.plainCartItem(cartItem);
   }
 
-  async removeProductsFromCart(
+  async removeProductFromCart(
     cartProductDto: CartProductDto,
   ): Promise<{ message: string }> {
     const { cartId, productId } = cartProductDto;

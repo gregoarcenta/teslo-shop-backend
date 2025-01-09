@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CartProductDto {
   @ApiProperty({
-    description: 'Cart id',
+    description: 'CartItem cart id',
     example: 'e1beca5d-39df-403e-b139-600b0a334506',
   })
   @IsString()
@@ -11,7 +11,7 @@ export class CartProductDto {
   cartId: string;
 
   @ApiProperty({
-    description: 'Product id',
+    description: 'CartItem product id',
     example: 'e1beca5d-39df-403e-b139-600b0a334506',
   })
   @IsString()

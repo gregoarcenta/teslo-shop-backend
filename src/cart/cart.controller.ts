@@ -14,6 +14,13 @@ import { ApiResponseInterceptor } from '../common/interceptors/api-response/api-
 import { Auth, GetUser } from '../auth/decorators';
 import { ValidateCartAndProductGuard } from '../common/guards/validate-cart-and-product/validate-cart-and-product.guard';
 import { CartProductDto, CartProductUpdateDto } from './dto';
+import {
+  ApiAddProductToCartResponse,
+  ApiClearCartResponse,
+  ApiGetCartResponse,
+  ApiRemoveProductFromCartResponse,
+  ApiUpdateQuantityResponse,
+} from '../swagger/decorators/cart';
 
 @ApiTags('Cart')
 @Controller('cart')
@@ -23,12 +30,14 @@ export class CartController {
 
   @Get()
   @Auth()
+  @ApiGetCartResponse()
   getCart(@GetUser('id') userId: string) {
     return this.cartService.getCart(userId);
   }
 
   @Delete()
   @Auth()
+  @ApiClearCartResponse()
   clearCart(@GetUser('id') userId: string) {
     return this.cartService.clearCart(userId);
   }
@@ -36,6 +45,7 @@ export class CartController {
   @Post('item')
   @UseGuards(ValidateCartAndProductGuard)
   @Auth()
+  @ApiAddProductToCartResponse()
   addProductToCart(@Body() cartProductDto: CartProductDto) {
     return this.cartService.addProductToCart(cartProductDto);
   }
@@ -43,6 +53,7 @@ export class CartController {
   @Patch('item')
   @UseGuards(ValidateCartAndProductGuard)
   @Auth()
+  @ApiUpdateQuantityResponse()
   updateQuantity(@Body() cartProductUpdateDto: CartProductUpdateDto) {
     return this.cartService.updateProductQuantity(cartProductUpdateDto);
   }
@@ -50,7 +61,8 @@ export class CartController {
   @Delete('item')
   @UseGuards(ValidateCartAndProductGuard)
   @Auth()
-  removeProductsFromCart(@Body() @Body() cartProductDto: CartProductDto) {
-    return this.cartService.removeProductsFromCart(cartProductDto);
+  @ApiRemoveProductFromCartResponse()
+  removeProductFromCart(@Body() @Body() cartProductDto: CartProductDto) {
+    return this.cartService.removeProductFromCart(cartProductDto);
   }
 }
