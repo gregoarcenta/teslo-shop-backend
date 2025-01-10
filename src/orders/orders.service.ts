@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { HandlerException } from '../common/exceptions/handler.exception';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './entities';
@@ -18,7 +18,8 @@ export class OrdersService {
     const order = this.orderRepository.create({ ...createOrderDto, user });
     try {
       await this.orderRepository.save(order);
-      return order;
+
+      return await this.findOne(order.id);
     } catch (err) {
       this.handlerException.handlerDBException(err);
     }
@@ -28,8 +29,17 @@ export class OrdersService {
     return `This action returns all orders`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
+  async findOne(id: string): Promise<Order> {
+    let order: Order;
+    try {
+      order = await this.orderRepository.findOne({ where: { id } });
+    } catch (err) {
+      this.handlerException.handlerDBException(err);
+    }
+
+    if (!order) throw new NotFoundException(`Order with id ${id} not found`);
+
+    return order;
   }
 
   update(id: number, updateOrderDto: UpdateOrderDto) {
