@@ -3,7 +3,7 @@ import { HandlerException } from '../common/exceptions/handler.exception';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './entities';
 import { Repository } from 'typeorm';
-import { CreateOrderDto, UpdateOrderDto } from './dto';
+import { CreateOrderDto, OrderPaginationDto, UpdateOrderDto } from './dto';
 import { User } from '../auth/entities/user.entity';
 
 @Injectable()
@@ -25,8 +25,26 @@ export class OrdersService {
     }
   }
 
-  findAll() {
-    return `This action returns all orders`;
+  async findAll(orderPagination: OrderPaginationDto) {
+    orderPagination.limit ??= 5;
+    orderPagination.offset ??= 0;
+
+    const { status, offset, limit } = orderPagination;
+
+    const queryBuilder = this.orderRepository.createQueryBuilder('order');
+    try {
+      if (status) {
+        queryBuilder.where('order.status = :status', { status });
+      }
+
+      return await queryBuilder
+        .skip(offset)
+        .take(limit)
+        .orderBy('order.created_at', 'DESC')
+        .getMany();
+    } catch (error) {
+      this.handlerException.handlerDBException(error);
+    }
   }
 
   async findOne(id: string): Promise<Order> {
@@ -43,10 +61,16 @@ export class OrdersService {
   }
 
   update(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} order`;
+    // let order: Order = await this.findOne(id);
+    // try {
+    //   order = await this.ordersRepository.preload({
+    //     ...order,
+    //     ...updateOrderDto,
+    //   });
+    //   await this.ordersRepository.save(order);
+    // } catch (error) {
+    //   this.handlerException.handlerDBException(error);
+    // }
+    // return order;
   }
 }

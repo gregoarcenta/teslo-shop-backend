@@ -1,20 +1,23 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { Auth, GetUser } from '../auth/decorators';
-import { CreateOrderDto, UpdateOrderDto } from './dto';
+import { CreateOrderDto, OrderPaginationDto, UpdateOrderDto } from './dto';
 import { User } from '../auth/entities/user.entity';
 import { ApiTags } from '@nestjs/swagger';
+import { ApiResponseInterceptor } from '../common/interceptors/api-response/api-response.interceptor';
 
 @ApiTags('Orders')
+@UseInterceptors(ApiResponseInterceptor)
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
@@ -26,8 +29,8 @@ export class OrdersController {
   }
 
   @Get()
-  findAll() {
-    return this.ordersService.findAll();
+  findAll(@Query() orderPaginationDto: OrderPaginationDto) {
+    return this.ordersService.findAll(orderPaginationDto);
   }
 
   @Get(':id')
@@ -38,10 +41,5 @@ export class OrdersController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
     return this.ordersService.update(+id, updateOrderDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.ordersService.remove(+id);
   }
 }
