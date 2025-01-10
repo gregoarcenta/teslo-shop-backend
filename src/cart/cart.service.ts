@@ -52,7 +52,7 @@ export class CartService {
     }
 
     const total = cart.cartItems.reduce(
-      (sum, item) => sum + item.quantity * item.product.price,
+      (sum, item) => sum + item.quantity * Number(item.product.price),
       0,
     );
 

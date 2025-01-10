@@ -48,11 +48,11 @@ export class Product {
 
   @ApiPropertyOptional({
     description: 'Product price',
-    example: 10.99,
+    example: '10.99',
     default: 0,
   })
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
-  price: number;
+  price: string;
 
   @ApiPropertyOptional({
     description: 'Product stock',

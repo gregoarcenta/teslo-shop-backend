@@ -1,11 +1,11 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
+  IsDecimal,
   IsEnum,
   IsInt,
   IsNumber,
   IsOptional,
-  IsPositive,
   IsString,
   Length,
   Min,
@@ -41,12 +41,10 @@ export class CreateProductDto {
   @Transform(({ value }) => value.trim())
   description?: string;
 
-  @ApiPropertyOptional({ example: 10.99, description: 'Product price' })
-  @IsNumber()
-  @IsPositive()
-  @IsOptional()
-  @Type(() => Number)
-  price?: number;
+  @ApiPropertyOptional({ example: '10.99', description: 'Product price' })
+  @IsString()
+  @IsDecimal({ decimal_digits: '2', force_decimal: true })
+  price?: string;
 
   @ApiPropertyOptional({ description: 'Product stock', example: 10 })
   @IsNumber()
