@@ -7,7 +7,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { User } from '../../auth/entities/user.entity';
 import { ProductImage } from './product-image.entity';
 import { Gender, Size, Type } from '../enums';
@@ -38,7 +38,7 @@ export class Product {
   @Column({ type: 'varchar', length: 100, unique: true })
   slug: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Product description',
     example: 'lorem ipsum dolor sit amet',
     default: null,
@@ -46,7 +46,7 @@ export class Product {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Product price',
     example: 10.99,
     default: 0,
@@ -54,7 +54,7 @@ export class Product {
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   price: number;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Product stock',
     example: 10,
     default: 0,
@@ -74,7 +74,7 @@ export class Product {
   @Column({ type: 'enum', enum: Size, array: true })
   sizes: Size[];
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Product tags',
     isArray: true,
     type: 'string',

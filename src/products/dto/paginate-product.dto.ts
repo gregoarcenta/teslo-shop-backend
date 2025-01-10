@@ -9,7 +9,7 @@ export class PaginateProductDto {
   @IsPositive()
   @IsOptional()
   @Type(() => Number)
-  limit: number;
+  limit?: number;
 
   @ApiPropertyOptional({ description: 'Offset page', example: '0' })
   @IsNumber()
@@ -17,5 +17,5 @@ export class PaginateProductDto {
   @Min(0)
   @IsOptional()
   @Type(() => Number)
-  offset: number;
+  offset?: number;
 }
