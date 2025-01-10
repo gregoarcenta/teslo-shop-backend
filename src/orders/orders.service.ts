@@ -45,8 +45,34 @@ export class OrdersService {
         .take(limit)
         .orderBy('order.created_at', 'DESC')
         .getMany();
-    } catch (error) {
-      this.handlerException.handlerDBException(error);
+    } catch (err) {
+      this.handlerException.handlerDBException(err);
+    }
+  }
+
+  async findAllByUser(
+    orderPagination: OrderPaginationDto,
+    user: User,
+  ): Promise<Order[]> {
+    orderPagination.limit ??= 5;
+    orderPagination.offset ??= 0;
+
+    const { status, offset, limit } = orderPagination;
+    const queryBuilder = this.orderRepository
+      .createQueryBuilder('order')
+      .where('order.user_id = :userId', { userId: user.id });
+    try {
+      if (status) {
+        queryBuilder.andWhere('order.status = :status', { status });
+      }
+
+      return await queryBuilder
+        .skip(offset)
+        .take(limit)
+        .orderBy('order.created_at', 'DESC')
+        .getMany();
+    } catch (err) {
+      this.handlerException.handlerDBException(err);
     }
   }
 
@@ -73,8 +99,8 @@ export class OrdersService {
         id,
         ...updateOrderDto,
       });
-    } catch (error) {
-      this.handlerException.handlerDBException(error);
+    } catch (err) {
+      this.handlerException.handlerDBException(err);
     }
 
     if (!order) throw new NotFoundException(`Order with id ${id} not found`);

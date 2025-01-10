@@ -34,6 +34,15 @@ export class OrdersController {
     return this.ordersService.findAll(orderPaginationDto);
   }
 
+  @Get('user')
+  @Auth()
+  findAllByUser(
+    @Query() orderPaginationDto: OrderPaginationDto,
+    @GetUser() user: User,
+  ) {
+    return this.ordersService.findAllByUser(orderPaginationDto, user);
+  }
+
   @Get(':id')
   @Auth()
   findOne(@Param('id', ParseUUIDPipe) id: string) {
@@ -48,6 +57,4 @@ export class OrdersController {
   ) {
     return this.ordersService.update(id, updateOrderDto);
   }
-
-  // Todo: endpoint ver orderes de un usuario en especifico
 }
