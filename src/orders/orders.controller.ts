@@ -29,17 +29,25 @@ export class OrdersController {
   }
 
   @Get()
+  @Auth()
   findAll(@Query() orderPaginationDto: OrderPaginationDto) {
     return this.ordersService.findAll(orderPaginationDto);
   }
 
   @Get(':id')
+  @Auth()
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.ordersService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-    return this.ordersService.update(+id, updateOrderDto);
+  @Auth()
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateOrderDto: UpdateOrderDto,
+  ) {
+    return this.ordersService.update(id, updateOrderDto);
   }
+
+  // Todo: endpoint ver orderes de un usuario en especifico
 }

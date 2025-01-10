@@ -14,18 +14,21 @@ export class OrdersService {
     private readonly orderRepository: Repository<Order>,
   ) {}
 
-  async create(createOrderDto: CreateOrderDto, user: User): Promise<Order> {
+  async create(
+    createOrderDto: CreateOrderDto,
+    user: User,
+  ): Promise<{ message: string; data: Order }> {
     const order = this.orderRepository.create({ ...createOrderDto, user });
     try {
       await this.orderRepository.save(order);
 
-      return await this.findOne(order.id);
+      return { message: 'Order created', data: await this.findOne(order.id) };
     } catch (err) {
       this.handlerException.handlerDBException(err);
     }
   }
 
-  async findAll(orderPagination: OrderPaginationDto) {
+  async findAll(orderPagination: OrderPaginationDto): Promise<Order[]> {
     orderPagination.limit ??= 5;
     orderPagination.offset ??= 0;
 
@@ -60,17 +63,27 @@ export class OrdersService {
     return order;
   }
 
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    // let order: Order = await this.findOne(id);
-    // try {
-    //   order = await this.ordersRepository.preload({
-    //     ...order,
-    //     ...updateOrderDto,
-    //   });
-    //   await this.ordersRepository.save(order);
-    // } catch (error) {
-    //   this.handlerException.handlerDBException(error);
-    // }
-    // return order;
+  async update(
+    id: string,
+    updateOrderDto: UpdateOrderDto,
+  ): Promise<{ message: string; data: Order }> {
+    let order: Order = null;
+    try {
+      order = await this.orderRepository.preload({
+        id,
+        ...updateOrderDto,
+      });
+    } catch (error) {
+      this.handlerException.handlerDBException(error);
+    }
+
+    if (!order) throw new NotFoundException(`Order with id ${id} not found`);
+
+    try {
+      await this.orderRepository.save(order);
+    } catch (err) {
+      this.handlerException.handlerDBException(err);
+    }
+    return { message: 'Order updated', data: order };
   }
 }

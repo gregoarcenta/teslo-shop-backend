@@ -30,6 +30,7 @@ export class OrderPaginationDto {
   @ApiPropertyOptional({
     description: 'Order status',
     example: OrderStatus.PENDING,
+    enum: OrderStatus,
   })
   @IsEnum(OrderStatus)
   @IsOptional()
