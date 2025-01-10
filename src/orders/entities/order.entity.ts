@@ -4,36 +4,39 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { OrderStatus } from '../enums/order-status';
 import { User } from '../../auth/entities/user.entity';
+import { OrderItems } from './order-items.entity';
 
 @Entity('orders')
 export class Order {
   @ApiProperty({
     description: 'Order ID',
-    example: '1234567890',
+    example: '9b12083a-5fe9-403b-80f9-6906adee303e',
     uniqueItems: true,
   })
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ApiProperty({
-    description: 'Order total',
-    example: 10.0,
-  })
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
-  total: number;
+  @ApiProperty({ description: 'Order total amount', example: '10.00' })
+  @Column({ type: 'decimal', precision: 10, scale: 2, name: 'total_amount' })
+  totalAmount: string;
 
-  @ApiProperty({
+  @ApiProperty({ description: 'Order total items', example: 1 })
+  @Column({ type: 'int', name: 'total_items' })
+  totalItems: number;
+
+  @ApiPropertyOptional({
     description: 'Order status',
     enum: OrderStatus,
-    example: OrderStatus.DELIVERED,
+    example: OrderStatus.PENDING,
   })
-  @Column({ type: 'enum', enum: OrderStatus })
+  @Column({ type: 'enum', enum: OrderStatus, default: OrderStatus.PENDING })
   status: OrderStatus;
 
   @ApiPropertyOptional({
@@ -57,13 +60,14 @@ export class Order {
   })
   paidAt: Date;
 
-  @ApiProperty({
-    description: 'Order user',
-    type: User,
-  })
+  @ApiProperty({ description: 'Order user', type: User })
   @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
-  userId: User;
+  user: User;
+
+  @ApiProperty({ description: 'Order items', type: [OrderItems] })
+  @OneToMany(() => OrderItems, (item) => item.order, { eager: true })
+  items: OrderItems[];
 
   @ApiProperty({
     description: 'Order created at',
