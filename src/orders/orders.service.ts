@@ -6,7 +6,7 @@ import {
 import { HandlerException } from '../common/exceptions/handler.exception';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order, OrderItem } from './entities';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import {
   OrderItemResponseDto,
   OrderPaginationDto,
@@ -15,12 +15,14 @@ import {
 } from './dto';
 import { User } from '../auth/entities/user.entity';
 import { CartService } from '../cart/cart.service';
+import { Product } from '../products/entities';
 
 @Injectable()
 export class OrdersService {
   constructor(
     private readonly handlerException: HandlerException,
     private readonly cartService: CartService,
+    private readonly dataSource: DataSource,
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
     @InjectRepository(OrderItem)
@@ -36,27 +38,87 @@ export class OrdersService {
       throw new BadRequestException('Cart is empty');
     }
 
-    const orderItems = cart.cartItems.map<OrderItem>((item) => {
-      return this.orderItemRepository.create({
-        product: { id: item.product.id },
-        price: item.product.price,
-        quantity: item.quantity,
-      });
-    });
-
-    const order = this.orderRepository.create({
-      user,
-      items: orderItems,
-      totalItems: orderItems.length,
-      totalAmount: cart.total,
-    });
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
     try {
-      await this.orderRepository.save(order);
+      // Configurar lock_timeout en la conexión actual
+      await queryRunner.query("SET lock_timeout = '15000ms'");
+
+      // Validar stock y reducirlo para cada producto
+      for (const item of cart.cartItems) {
+        const product = await queryRunner.manager
+          .createQueryBuilder(Product, 'product')
+          .setLock('pessimistic_write')
+          .where('product.id = :id', { id: item.product.id })
+          .getOne();
+
+        if (!product) {
+          throw new NotFoundException(
+            `Product with ID ${item.product.id} not found.`,
+          );
+        }
+
+        if (product.stock < item.quantity) {
+          throw new BadRequestException(
+            `Not enough stock for product "${product.title}". Available: ${product.stock}.`,
+          );
+        }
+
+        // Reducir el stock
+        product.stock -= item.quantity;
+        await queryRunner.manager.save(product);
+      }
+
+      // Crear instancias de los items de la orden
+      const orderItems = cart.cartItems.map<OrderItem>((item) => {
+        return this.orderItemRepository.create({
+          product: { id: item.product.id },
+          price: item.product.price,
+          quantity: item.quantity,
+        });
+      });
+
+      //Crea instancia de la orden completa
+      const order = this.orderRepository.create({
+        user,
+        items: orderItems,
+        totalItems: orderItems.length,
+        totalAmount: cart.total,
+      });
+
+      // Guarda la orden
+      await queryRunner.manager.save(order);
+
+      // Vacia el carrito
       await this.cartService.clearCart(user.id);
+
+      // Confirmar commit
+      await queryRunner.commitTransaction();
+
       return { message: 'Order created', data: await this.findOne(order.id) };
     } catch (err) {
+      await queryRunner.rollbackTransaction();
+
+      if (
+        err.name === 'QueryFailedError' &&
+        err.message.includes('lock timeout')
+      ) {
+        throw new BadRequestException(
+          'The product is being processed by another user, please try again.',
+        );
+      }
+
+      if (
+        err instanceof BadRequestException ||
+        err instanceof NotFoundException
+      )
+        throw err;
+
       this.handlerException.handlerDBException(err);
+    } finally {
+      await queryRunner.release();
     }
   }
 
