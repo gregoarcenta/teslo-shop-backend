@@ -1,5 +1,5 @@
 import { OrderItem } from '../entities';
-import { PickType } from '@nestjs/swagger';
+import { ApiProperty, PickType } from '@nestjs/swagger';
 import { Product } from '../../products/entities';
 
 export class OrderItemResponseDto extends PickType(OrderItem, [
@@ -7,5 +7,9 @@ export class OrderItemResponseDto extends PickType(OrderItem, [
   'quantity',
   'price',
 ]) {
+  @ApiProperty({
+    description: 'Order items product',
+    type: PickType(Product, ['id', 'title']),
+  })
   product: Pick<Product, 'id' | 'title'>;
 }

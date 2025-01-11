@@ -15,6 +15,13 @@ import { OrderPaginationDto, UpdateOrderDto } from './dto';
 import { User } from '../auth/entities/user.entity';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiResponseInterceptor } from '../common/interceptors/api-response/api-response.interceptor';
+import {
+  ApiCreateResponse,
+  ApiFindAllByUserResponse,
+  ApiFindAllResponse,
+  ApiFindOneResponse,
+  ApiUpdateResponse,
+} from '../swagger/decorators/orders';
 
 @ApiTags('Orders')
 @UseInterceptors(ApiResponseInterceptor)
@@ -24,18 +31,21 @@ export class OrdersController {
 
   @Post()
   @Auth()
+  @ApiCreateResponse()
   create(@GetUser() user: User) {
     return this.ordersService.create(user);
   }
 
   @Get()
   @Auth()
+  @ApiFindAllResponse()
   findAll(@Query() orderPaginationDto: OrderPaginationDto) {
     return this.ordersService.findAll(orderPaginationDto);
   }
 
   @Get('user')
   @Auth()
+  @ApiFindAllByUserResponse()
   findAllByUser(
     @Query() orderPaginationDto: OrderPaginationDto,
     @GetUser() user: User,
@@ -45,12 +55,14 @@ export class OrdersController {
 
   @Get(':id')
   @Auth()
+  @ApiFindOneResponse()
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.ordersService.findOne(id);
   }
 
   @Patch(':id')
   @Auth()
+  @ApiUpdateResponse()
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateOrderDto: UpdateOrderDto,

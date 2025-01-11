@@ -1,6 +1,6 @@
 import { Order } from '../entities';
 import { OrderItemResponseDto } from './order-item-response.dto';
-import { PickType } from '@nestjs/swagger';
+import { ApiProperty, PickType } from '@nestjs/swagger';
 
 export class OrderResponseDto extends PickType(Order, [
   'id',
@@ -11,5 +11,6 @@ export class OrderResponseDto extends PickType(Order, [
   'totalAmount',
   'totalItems',
 ]) {
+  @ApiProperty({ description: 'Order items', type: [OrderItemResponseDto] })
   items: OrderItemResponseDto[];
 }
