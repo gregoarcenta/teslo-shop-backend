@@ -11,8 +11,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Order } from './order.entity';
 import { Product } from '../../products/entities';
 
-@Entity('orders-items')
-export class OrderItems {
+@Entity('order_items')
+export class OrderItem {
   @ApiProperty({
     description: 'Order item ID',
     example: '9b12083a-5fe9-403b-80f9-6906adee303e',
@@ -36,7 +36,11 @@ export class OrderItems {
     description: 'Order item product_id',
     type: Product,
   })
-  @ManyToOne(() => Product, { nullable: false, onDelete: 'CASCADE' })
+  @ManyToOne(() => Product, {
+    nullable: false,
+    onDelete: 'CASCADE',
+    eager: true,
+  })
   @JoinColumn({ name: 'product_id' })
   product: Product;
 

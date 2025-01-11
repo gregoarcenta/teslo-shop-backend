@@ -153,7 +153,7 @@ export class CartService {
   private plainCart(cart: Cart, total: number): CartResponseDto {
     return {
       id: cart.id,
-      total,
+      total: total.toFixed(2),
       cartItems: cart.cartItems.map((item) => this.plainCartItem(item)),
     };
   }

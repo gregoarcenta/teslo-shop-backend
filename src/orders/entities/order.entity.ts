@@ -11,7 +11,7 @@ import {
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { OrderStatus } from '../enums/order-status';
 import { User } from '../../auth/entities/user.entity';
-import { OrderItems } from './order-items.entity';
+import { OrderItem } from './order-items.entity';
 
 @Entity('orders')
 export class Order {
@@ -65,9 +65,12 @@ export class Order {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ApiProperty({ description: 'Order items', type: [OrderItems] })
-  @OneToMany(() => OrderItems, (item) => item.order, { eager: true })
-  items: OrderItems[];
+  @ApiProperty({ description: 'Order items', type: [OrderItem] })
+  @OneToMany(() => OrderItem, (item) => item.order, {
+    eager: true,
+    cascade: true,
+  })
+  items: OrderItem[];
 
   @ApiProperty({
     description: 'Order created at',
