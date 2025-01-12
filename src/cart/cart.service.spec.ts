@@ -116,7 +116,7 @@ describe('CartService', () => {
 
       expect(result).toEqual({
         id: 'cart1',
-        total: 400,
+        total: '400.00',
         cartItems: expect.any(Array),
       });
     });

@@ -211,7 +211,7 @@ export class OrdersService {
     return { message: 'Order updated', data: await this.findOne(order.id) };
   }
 
-  private plainOrder(order: Order): OrderResponseDto {
+  plainOrder(order: Order): OrderResponseDto {
     return {
       id: order.id,
       createdAt: order.createdAt,
@@ -224,7 +224,7 @@ export class OrdersService {
     };
   }
 
-  private plainOrderItem(orderItem: OrderItem): OrderItemResponseDto {
+  plainOrderItem(orderItem: OrderItem): OrderItemResponseDto {
     return {
       id: orderItem.id,
       quantity: orderItem.quantity,
