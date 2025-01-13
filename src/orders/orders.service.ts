@@ -215,6 +215,7 @@ export class OrdersService {
     return {
       id: order.id,
       createdAt: order.createdAt,
+      userEmail: order.user.email,
       status: order.status,
       paid: order.paid,
       paidAt: order.paidAt,

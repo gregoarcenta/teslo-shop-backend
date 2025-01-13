@@ -13,4 +13,5 @@ export class OrderResponseDto extends PickType(Order, [
 ]) {
   @ApiProperty({ description: 'Order items', type: [OrderItemResponseDto] })
   items: OrderItemResponseDto[];
+  userEmail: string;
 }

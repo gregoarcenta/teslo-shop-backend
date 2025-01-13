@@ -61,7 +61,7 @@ export class Order {
   paidAt: Date;
 
   @ApiProperty({ description: 'Order user', type: User })
-  @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
+  @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE', eager: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
