@@ -6,6 +6,7 @@ import { AuthModule } from '../auth/auth.module';
 import { Order, OrderItem } from './entities';
 import { HandlerException } from '../common/exceptions/handler.exception';
 import { CartModule } from '../cart/cart.module';
+import { ProductsModule } from '../products/products.module';
 
 @Module({
   controllers: [OrdersController],
@@ -13,6 +14,7 @@ import { CartModule } from '../cart/cart.module';
   imports: [
     AuthModule,
     CartModule,
+    ProductsModule,
     TypeOrmModule.forFeature([Order, OrderItem]),
   ],
   exports: [OrdersService],

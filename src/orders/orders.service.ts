@@ -16,12 +16,15 @@ import {
 import { User } from '../auth/entities/user.entity';
 import { CartService } from '../cart/cart.service';
 import { Product } from '../products/entities';
+import { OrderStatus } from './enums/order-status';
+import { ProductsService } from '../products/products.service';
 
 @Injectable()
 export class OrdersService {
   constructor(
     private readonly handlerException: HandlerException,
     private readonly cartService: CartService,
+    private readonly productsService: ProductsService,
     private readonly dataSource: DataSource,
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
@@ -209,6 +212,20 @@ export class OrdersService {
     }
 
     return { message: 'Order updated', data: await this.findOne(order.id) };
+  }
+
+  async cancelOrder(orderId: string): Promise<void> {
+    const order = await this.findOne(orderId);
+
+    if (order.status === OrderStatus.PENDING) {
+      // Restaurar stock
+      for (const item of order.items) {
+        await this.productsService.updateStock(item.product.id, item.quantity);
+      }
+
+      // Cambiar el estado de la orden
+      await this.update(orderId, { status: OrderStatus.CANCELLED });
+    }
   }
 
   plainOrder(order: Order): OrderResponseDto {

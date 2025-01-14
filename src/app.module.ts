@@ -9,6 +9,7 @@ import { FilesModule } from './files/files.module';
 import { CartModule } from './cart/cart.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { OrdersModule } from './orders/orders.module';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { OrdersModule } from './orders/orders.module';
     FilesModule,
     CartModule,
     OrdersModule,
+    PaymentsModule,
   ],
 })
 export class AppModule {}

@@ -137,6 +137,17 @@ export class ProductsService {
     }
   }
 
+  async updateStock(productId: string, quantity: number) {
+    const product = await this.findOne(productId);
+    try {
+      await this.productRepository.update(productId, {
+        stock: (product.stock += quantity),
+      });
+    } catch (err) {
+      this.handlerException.handlerDBException(err);
+    }
+  }
+
   async remove(id: string) {
     const product = await this.findOne(id);
     try {
