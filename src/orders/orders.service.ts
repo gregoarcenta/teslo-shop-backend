@@ -215,17 +215,37 @@ export class OrdersService {
   }
 
   async cancelOrder(orderId: string): Promise<void> {
-    const order = await this.findOne(orderId);
+    const { status, items } = await this.findOne(orderId);
 
-    if (order.status === OrderStatus.PENDING) {
-      // Restaurar stock
-      for (const item of order.items) {
-        await this.productsService.updateStock(item.product.id, item.quantity);
-      }
-
-      // Cambiar el estado de la orden
-      await this.update(orderId, { status: OrderStatus.CANCELLED });
+    if (status !== OrderStatus.PENDING) {
+      throw new BadRequestException(
+        `Order to cancel order with ID ${orderId} doesn't have status pending - actual status: ${status}`,
+      );
     }
+
+    // Restaurar stock
+    for (const item of items) {
+      await this.productsService.updateStock(item.product.id, item.quantity);
+    }
+
+    // Cambiar el estado de la orden
+    await this.update(orderId, { status: OrderStatus.CANCELLED });
+  }
+
+  async successOrder(orderId: string): Promise<void> {
+    const { status } = await this.findOne(orderId);
+
+    if (status !== OrderStatus.PENDING) {
+      throw new BadRequestException(
+        `Error to success order with ID: ${orderId} doesn't have status pending - actual status: ${status}`,
+      );
+    }
+
+    await this.update(orderId, {
+      status: OrderStatus.DELIVERED,
+      paid: true,
+      paidAt: new Date(),
+    });
   }
 
   plainOrder(order: Order): OrderResponseDto {
@@ -248,7 +268,7 @@ export class OrdersService {
       quantity: orderItem.quantity,
       price: orderItem.price,
       product: {
-        id: orderItem.id,
+        id: orderItem.product.id,
         title: orderItem.product.title,
       },
     };

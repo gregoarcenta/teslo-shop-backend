@@ -138,13 +138,27 @@ export class ProductsService {
   }
 
   async updateStock(productId: string, quantity: number) {
-    const product = await this.findOne(productId);
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     try {
-      await this.productRepository.update(productId, {
-        stock: (product.stock += quantity),
-      });
+      const product = await queryRunner.manager
+        .createQueryBuilder(Product, 'product')
+        .setLock('pessimistic_write')
+        .where('product.id = :id', { id: productId })
+        .getOne();
+
+      if (product) {
+        product.stock += quantity;
+        await queryRunner.manager.save(product);
+      }
+
+      await queryRunner.commitTransaction();
     } catch (err) {
+      await queryRunner.rollbackTransaction();
       this.handlerException.handlerDBException(err);
+    } finally {
+      await queryRunner.release();
     }
   }
 

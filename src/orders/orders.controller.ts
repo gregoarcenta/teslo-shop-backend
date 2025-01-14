@@ -22,6 +22,7 @@ import {
   ApiFindOneResponse,
   ApiUpdateResponse,
 } from '../swagger/decorators/orders';
+import { Role } from '../config';
 
 @ApiTags('Orders')
 @UseInterceptors(ApiResponseInterceptor)
@@ -37,7 +38,7 @@ export class OrdersController {
   }
 
   @Get()
-  @Auth()
+  @Auth(Role.ADMIN)
   @ApiFindAllResponse()
   findAll(@Query() orderPaginationDto: OrderPaginationDto) {
     return this.ordersService.findAll(orderPaginationDto);
@@ -61,7 +62,7 @@ export class OrdersController {
   }
 
   @Patch(':id')
-  @Auth()
+  @Auth(Role.ADMIN)
   @ApiUpdateResponse()
   update(
     @Param('id', ParseUUIDPipe) id: string,

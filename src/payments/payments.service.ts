@@ -24,6 +24,12 @@ export class PaymentsService {
   async createPaymentSession(createPaymentDto: PaymentSessionDto) {
     const order = await this.ordersService.findOne(createPaymentDto.orderId);
 
+    if (order.status !== OrderStatus.PENDING) {
+      throw new BadRequestException(
+        `Error to create payment session with order ID: ${order.id} doesn't have pending status - actual status: ${order.status}`,
+      );
+    }
+
     const line_items =
       order.items.map<Stripe.Checkout.SessionCreateParams.LineItem>((item) => ({
         price_data: {
@@ -56,19 +62,15 @@ export class PaymentsService {
         this.EpSecret,
       );
 
-      let orderId: string;
-
+      const orderId = event.data.object['metadata'].orderId;
+      // const orderId = '235bae9b-0ab5-426e-918e-c11b805d14cb';
       switch (event.type) {
         case 'checkout.session.completed':
-          console.log('session completed');
-          orderId = event.data.object.metadata.orderId;
-          await this.ordersService.update(orderId, {
-            status: OrderStatus.DELIVERED,
-          });
+          console.log(`session completed - Order: ${orderId}`);
+          await this.ordersService.successOrder(orderId);
           break;
         case 'checkout.session.expired':
-          console.log('session expired');
-          orderId = event.data.object.metadata.orderId;
+          console.log(`session cancelled - Order: ${orderId}`);
           await this.ordersService.cancelOrder(orderId);
           break;
         default:
@@ -77,7 +79,6 @@ export class PaymentsService {
 
       return { received: true };
     } catch (err) {
-      console.log('error', err);
       console.error(`Error processing webhook: ${err.message}`);
       throw new BadRequestException('Webhook Error');
     }

@@ -17,6 +17,6 @@ import { ProductsModule } from '../products/products.module';
     ProductsModule,
     TypeOrmModule.forFeature([Order, OrderItem]),
   ],
-  exports: [OrdersService],
+  exports: [OrdersService, TypeOrmModule],
 })
 export class OrdersModule {}
