@@ -4,20 +4,27 @@ import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 import { OrdersService } from '../orders/orders.service';
 import { OrderStatus } from '../orders/enums/order-status';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class PaymentsService {
   private readonly stripeApiKey: string;
+  private readonly stripeEpSecret: string;
+  private readonly tokenSecret: string;
+  private readonly urlSuccess: string;
+  private readonly urlCancel: string;
   private readonly stripe: Stripe;
-
-  private EpSecret =
-    'whsec_61cf04f81dea1d54795d5c7ebb06afd4e64b781644e45c8092dca73b6d6ccfc0';
 
   constructor(
     private readonly configService: ConfigService,
     private readonly ordersService: OrdersService,
+    private readonly jwtService: JwtService,
   ) {
-    this.stripeApiKey = this.configService.get<string>('STRIPE_SECRET');
+    this.stripeApiKey = this.configService.get<string>('STRIPE_API_SECRET');
+    this.stripeEpSecret = this.configService.get<string>('STRIPE_EP_SECRET');
+    this.tokenSecret = this.configService.get<string>('STRIPE_TOKEN_SECRET');
+    this.urlSuccess = this.configService.get<string>('STRIPE_URL_SUCCESS');
+    this.urlCancel = this.configService.get<string>('STRIPE_URL_CANCEL');
     this.stripe = new Stripe(this.stripeApiKey);
   }
 
@@ -42,6 +49,11 @@ export class PaymentsService {
         quantity: item.quantity,
       }));
 
+    const token = await this.jwtService.signAsync(
+      { orderId: order.id },
+      { expiresIn: '5m', secret: this.tokenSecret },
+    );
+
     return await this.stripe.checkout.sessions.create({
       metadata: { orderId: order.id },
       customer_email: order.userEmail,
@@ -49,8 +61,8 @@ export class PaymentsService {
       line_items,
       mode: 'payment',
       expires_at: Math.floor(Date.now() / 1000) + 60 * 30,
-      success_url: 'http://localhost:3000/api/payments/success',
-      cancel_url: 'http://localhost:3000/api/payments/cancel',
+      success_url: `${this.urlSuccess}?token=${token}`,
+      cancel_url: `${this.urlCancel}?token=${token}`,
     });
   }
 
@@ -59,7 +71,7 @@ export class PaymentsService {
       const event = this.stripe.webhooks.constructEvent(
         payload,
         signature,
-        this.EpSecret,
+        this.stripeEpSecret,
       );
 
       const orderId = event.data.object['metadata'].orderId;

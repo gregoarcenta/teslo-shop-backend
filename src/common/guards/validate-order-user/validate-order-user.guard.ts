@@ -24,8 +24,7 @@ export class ValidateOrderUserGuard implements CanActivate {
     return this.orderRepository
       .findOneBy({ id: orderId })
       .then((order) => {
-        if (order.user.id === userId) return true;
-        return false;
+        return order.user.id === userId;
       })
       .catch((err) => {
         this.handlerException.handlerDBException(err);

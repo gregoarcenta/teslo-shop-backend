@@ -12,7 +12,11 @@ export const validationSchema = Joi.object({
   CLOUDINARY_API_KEY: Joi.string().required(),
   CLOUDINARY_API_SECRET: Joi.string().required(),
   JWT_SECRET: Joi.string().required(),
-  STRIPE_SECRET: Joi.string().required(),
+  STRIPE_API_SECRET: Joi.string().required(),
+  STRIPE_EP_SECRET: Joi.string().required(),
+  STRIPE_TOKEN_SECRET: Joi.string().required(),
+  STRIPE_URL_SUCCESS: Joi.string().uri().required(),
+  STRIPE_URL_CANCEL: Joi.string().uri().required(),
   APP_NAME: Joi.string().default('Example Initial App'),
   PORT: Joi.number().port().default(3000),
 });
