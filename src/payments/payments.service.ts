@@ -75,6 +75,8 @@ export class PaymentsService {
         this.stripeEpSecret,
       );
 
+      console.log(event);
+
       const orderId = event.data.object['metadata'].orderId;
       // const orderId = '235bae9b-0ab5-426e-918e-c11b805d14cb';
       switch (event.type) {

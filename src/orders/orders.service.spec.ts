@@ -11,6 +11,7 @@ import { Gender, Size, Type } from '../products/enums';
 import { ProductResponseDto } from '../products/dto';
 import { OrderResponseDto } from './dto';
 import { BadRequestException } from '@nestjs/common';
+import { ProductsService } from '../products/products.service';
 
 const mockDataSource = {
   createQueryRunner: jest.fn().mockReturnValue({
@@ -30,7 +31,7 @@ const mockDataSource = {
   }),
 };
 
-const mockUser: User = { id: 'test-user' } as User;
+const mockUser: User = { id: 'test-user', email: 'user@gmail.com' } as User;
 const mockProduct: ProductResponseDto = {
   id: 'product-ID',
   title: 'T-shirt Teslo',
@@ -90,6 +91,12 @@ describe('OrdersService', () => {
           },
         },
         {
+          provide: ProductsService,
+          useValue: {
+            updateStock: jest.fn(),
+          },
+        },
+        {
           provide: getRepositoryToken(Order),
           useValue: {
             create: jest.fn().mockReturnValue(mockOrder),
@@ -124,9 +131,10 @@ describe('OrdersService', () => {
   describe('create', () => {
     it('should create an order successfully', async () => {
       jest.spyOn(cartService, 'getCart').mockResolvedValue(mockCart);
-      jest
-        .spyOn(orderService, 'findOne')
-        .mockResolvedValue(mockOrder as OrderResponseDto);
+      jest.spyOn(orderService, 'findOne').mockResolvedValue({
+        ...mockOrder,
+        userEmail: mockUser.email,
+      } as OrderResponseDto);
 
       mockDataSource
         .createQueryRunner()
