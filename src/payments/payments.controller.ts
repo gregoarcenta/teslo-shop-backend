@@ -14,6 +14,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { ApiResponseInterceptor } from '../common/interceptors/api-response/api-response.interceptor';
 import { Auth } from '../auth/decorators';
 import { ValidateOrderUserGuard } from '../common/guards/validate-order-user/validate-order-user.guard';
+import { TokenSessionDto } from './dto/token-session.dto';
 
 @ApiTags('Payments')
 @UseInterceptors(ApiResponseInterceptor)
@@ -34,6 +35,12 @@ export class PaymentsController {
     @Headers('stripe-signature') signature: string,
   ) {
     return this.paymentsService.handleStripeWebhook(payload, signature);
+  }
+
+  @Post('validate-token-session')
+  @Auth()
+  async validateTokenSession(@Body() tokenSessionDto: TokenSessionDto) {
+    return this.paymentsService.validateToken(tokenSessionDto);
   }
 
   @Get('success')

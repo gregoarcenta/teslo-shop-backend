@@ -5,6 +5,7 @@ import Stripe from 'stripe';
 import { OrdersService } from '../orders/orders.service';
 import { OrderStatus } from '../orders/enums/order-status';
 import { JwtService } from '@nestjs/jwt';
+import { TokenSessionDto } from './dto/token-session.dto';
 
 @Injectable()
 export class PaymentsService {
@@ -51,7 +52,7 @@ export class PaymentsService {
 
     const token = await this.jwtService.signAsync(
       { orderId: order.id },
-      { expiresIn: '5m', secret: this.tokenSecret },
+      { expiresIn: '30m', secret: this.tokenSecret },
     );
 
     return await this.stripe.checkout.sessions.create({
@@ -93,6 +94,17 @@ export class PaymentsService {
     } catch (err) {
       console.error(`Error processing webhook: ${err.message}`);
       throw new BadRequestException('Webhook Error');
+    }
+  }
+
+  async validateToken(tokenSessionDto: TokenSessionDto): Promise<boolean> {
+    try {
+      await this.jwtService.verifyAsync(tokenSessionDto.token, {
+        secret: this.tokenSecret,
+      });
+      return true;
+    } catch (err) {
+      return false;
     }
   }
 
