@@ -2,7 +2,10 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
 
-# Teslo API
+# Teslo Shop - Backend API
+
+Teslo Shop es un backend API para un ecommerce que permite realizar operaciones de usuarios, productos, carritos de
+compras, órdenes y pagos. El sistema está construido con NestJS y utiliza PostgreSQL como base de datos.
 
 ## Ejecutar en entorno de desarrollo
 
