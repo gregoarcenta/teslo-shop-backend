@@ -1,4 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { PaymentSessionDto } from '../../../payments/dto/payment-session.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -24,9 +29,12 @@ export class ValidateOrderUserGuard implements CanActivate {
     return this.orderRepository
       .findOneBy({ id: orderId })
       .then((order) => {
+        if (!order) throw new NotFoundException('Order not found');
+
         return order.user.id === userId;
       })
       .catch((err) => {
+        if (err instanceof NotFoundException) throw err;
         this.handlerException.handlerDBException(err);
       });
   }
