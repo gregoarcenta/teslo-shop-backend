@@ -8,7 +8,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
     const isProduction = this.configService.get('NODE_ENV') === 'production';
-    
+
     return {
       type: this.configService.get('DB_TYPE') as any,
       host: this.configService.get('DB_HOST'),
@@ -17,7 +17,8 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       password: this.configService.get('DB_PASSWORD'),
       database: this.configService.get('DB_DATABASE'),
       entities: ['dist/**/*.entity.js'],
-      synchronize: !isProduction,
+      // synchronize: !isProduction,
+      synchronize: true,
       ssl: isProduction,
       extra: isProduction ? { rejectUnauthorized: false } : null,
     };
