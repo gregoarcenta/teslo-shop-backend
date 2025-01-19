@@ -42,7 +42,9 @@ export class AuthService {
     };
   }
 
-  async signIn(signInDto: SignInDto): Promise<UserResponseDto> {
+  async signIn(
+    signInDto: SignInDto,
+  ): Promise<{ message: string; data: UserResponseDto }> {
     let user: User;
     try {
       user = await this.usersRepository
@@ -66,8 +68,11 @@ export class AuthService {
       throw new UnauthorizedException('Credentials are not valid (password)');
 
     return {
-      user: await this.findUser(user.id),
-      accessToken: await this.getJwtToken({ id: user.id }),
+      message: 'Logged in successfully!',
+      data: {
+        user: await this.findUser(user.id),
+        accessToken: await this.getJwtToken({ id: user.id }),
+      },
     };
   }
 
