@@ -26,12 +26,12 @@ export class SeedService {
 
   private async insertUsers(): Promise<User> {
     const users = initialData.users;
-    let insertPromises: Promise<UserResponseDto>[] = [];
+    let insertPromises: Promise<{ data: UserResponseDto }>[] = [];
     for (const user of users) {
       insertPromises.push(this.authService.signUp(user));
     }
     const [adminUser, _] = await Promise.all(insertPromises);
-    return adminUser.user;
+    return adminUser.data.user;
   }
 
   private async insertProducts(adminUser: User) {
