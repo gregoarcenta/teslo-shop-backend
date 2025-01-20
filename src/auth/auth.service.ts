@@ -22,7 +22,9 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signUp(signUpDto: SignUpDto): Promise<UserResponseDto> {
+  async signUp(
+    signUpDto: SignUpDto,
+  ): Promise<{ message: string; data: UserResponseDto }> {
     const user = this.usersRepository.create({
       ...signUpDto,
       password: await bcrypt.hash(signUpDto.password, 10),
@@ -37,8 +39,11 @@ export class AuthService {
     this.eventEmitter.emit('user.created', user);
 
     return {
-      user: await this.findUser(user.id),
-      accessToken: await this.getJwtToken({ id: user.id }),
+      message: 'Your account has been successfully created!',
+      data: {
+        user: await this.findUser(user.id),
+        accessToken: await this.getJwtToken({ id: user.id }),
+      },
     };
   }
 
