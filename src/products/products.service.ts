@@ -79,7 +79,7 @@ export class ProductsService {
       return products.map(({ images, ...productProperties }) => ({
         ...productProperties,
         createdBy: productProperties.createdBy.fullName,
-        images: images.map((img) => img.name),
+        images: images.map((img) => img.name).sort(),
       }));
     } catch (err) {
       this.handlerException.handlerDBException(err);
