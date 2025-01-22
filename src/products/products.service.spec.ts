@@ -161,6 +161,7 @@ describe('ProductsService', () => {
 
     expect(result).toEqual(expectedProducts);
     expect(mockProductRepository.find).toHaveBeenCalledWith({
+      where: {},
       take: paginate.limit,
       skip: paginate.offset,
       order: { createdAt: 'DESC' },

@@ -55,11 +55,25 @@ export class ProductsService {
   async findAll(paginate: PaginateProductDto): Promise<ProductResponseDto[]> {
     paginate.limit ??= 10;
     paginate.offset ??= 0;
+    paginate.order ??= 'newest';
+
+    const { limit, offset, order, type, term } = paginate;
+
+    const queryOptions: any = {};
+    if (type) queryOptions.type = type;
+    if (term) queryOptions.title = ILike(`%${term}%`);
+
+    const orderOptions: any = {};
+    if (order === 'newest') orderOptions.createdAt = 'DESC';
+    if (order === 'increasingPrice') orderOptions.price = 'ASC';
+    if (order === 'decreasingPrice') orderOptions.price = 'DESC';
+
     try {
       const products = await this.productRepository.find({
-        take: paginate.limit,
-        skip: paginate.offset,
-        order: { createdAt: 'DESC' },
+        where: queryOptions,
+        take: limit,
+        skip: offset,
+        order: orderOptions,
       });
 
       return products.map(({ images, ...productProperties }) => ({

@@ -31,13 +31,16 @@ describe('SeedService', () => {
     (productsService.removeAll as jest.Mock).mockResolvedValue(undefined);
     (authService.removeAll as jest.Mock).mockResolvedValue(undefined);
 
-    const mockUserResponse: UserResponseDto = {
-      user: {
-        id: '1',
-        email: 'admin@admin.com',
-        fullName: 'Admin',
-      } as User,
-      accessToken: 'accessToken',
+    const mockUserResponse: { message: string; data: UserResponseDto } = {
+      message: '',
+      data: {
+        user: {
+          id: '1',
+          email: 'admin@admin.com',
+          fullName: 'Admin',
+        } as User,
+        accessToken: 'accessToken',
+      },
     };
     (authService.signUp as jest.Mock).mockResolvedValue(mockUserResponse);
 

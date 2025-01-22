@@ -227,8 +227,6 @@ describe('CartService', () => {
 
       const result = await service.updateProductQuantity(cartProductUpdateDto);
 
-      console.log(result);
-
       expect(mockCartItemRepository.findOne).toHaveBeenCalledWith({
         where: {
           cart: { id: cartProductUpdateDto.cartId },
