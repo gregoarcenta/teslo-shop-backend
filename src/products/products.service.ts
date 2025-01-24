@@ -52,7 +52,10 @@ export class ProductsService {
     }
   }
 
-  async findAll(paginate: PaginateProductDto): Promise<ProductResponseDto[]> {
+  async findAll(paginate: PaginateProductDto): Promise<{
+    message: string;
+    data: { products: ProductResponseDto[]; totalItems: number };
+  }> {
     paginate.limit ??= 10;
     paginate.offset ??= 0;
     paginate.order ??= 'newest';
@@ -69,6 +72,7 @@ export class ProductsService {
     if (order === 'decreasingPrice') orderOptions.price = 'DESC';
 
     try {
+      const productsLength = await this.productRepository.countBy(queryOptions);
       const products = await this.productRepository.find({
         where: queryOptions,
         take: limit,
@@ -76,11 +80,17 @@ export class ProductsService {
         order: orderOptions,
       });
 
-      return products.map(({ images, ...productProperties }) => ({
-        ...productProperties,
-        createdBy: productProperties.createdBy.fullName,
-        images: images.map((img) => img.name).sort(),
-      }));
+      return {
+        message: 'products have been successfully obtained',
+        data: {
+          products: products.map(({ images, ...productProperties }) => ({
+            ...productProperties,
+            createdBy: productProperties.createdBy.fullName,
+            images: images.map((img) => img.name).sort(),
+          })),
+          totalItems: productsLength,
+        },
+      };
     } catch (err) {
       this.handlerException.handlerDBException(err);
     }

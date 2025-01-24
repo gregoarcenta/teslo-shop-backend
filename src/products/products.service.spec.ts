@@ -22,6 +22,7 @@ describe('ProductsService', () => {
     find: jest.fn(),
     delete: jest.fn(),
     preload: jest.fn(),
+    countBy: jest.fn(),
   };
 
   const mockProductImageRepository = {
@@ -156,10 +157,17 @@ describe('ProductsService', () => {
     ];
 
     mockProductRepository.find.mockResolvedValue(products);
+    mockProductRepository.countBy.mockResolvedValue(1);
 
     const result = await service.findAll(paginate);
 
-    expect(result).toEqual(expectedProducts);
+    expect(result).toEqual({
+      message: 'products have been successfully obtained',
+      data: {
+        products: expectedProducts,
+        totalItems: 1,
+      },
+    });
     expect(mockProductRepository.find).toHaveBeenCalledWith({
       where: {},
       take: paginate.limit,
