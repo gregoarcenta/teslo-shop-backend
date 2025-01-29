@@ -176,7 +176,7 @@ export class OrdersService {
       });
 
       return {
-        message: '',
+        message: 'orders have been successfully obtained',
         data: {
           orders: orders.map<OrderResponseDto>((order) =>
             this.plainOrder(order),
