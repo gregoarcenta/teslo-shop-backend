@@ -86,7 +86,7 @@ export class ProductsService {
           products: products.map(({ images, ...productProperties }) => ({
             ...productProperties,
             createdBy: productProperties.createdBy.fullName,
-            images: images.map((img) => img.name).sort(),
+            images: images.map((img) => img.name),
           })),
           totalItems: productsLength,
         },

@@ -153,7 +153,10 @@ export class OrdersService {
   async findAllByUser(
     orderPagination: OrderPaginationDto,
     user: User,
-  ): Promise<OrderResponseDto[]> {
+  ): Promise<{
+    message: string;
+    data: { orders: OrderResponseDto[]; totalOrders: number };
+  }> {
     orderPagination.limit ??= 5;
     orderPagination.offset ??= 0;
 
@@ -162,7 +165,9 @@ export class OrdersService {
     try {
       const queryOptions: Partial<Order> = { user };
       if (status) queryOptions.status = status;
-
+      const totalOrders = await this.orderRepository.count({
+        where: queryOptions,
+      });
       const orders = await this.orderRepository.find({
         where: queryOptions,
         order: { createdAt: { direction: 'DESC' } },
@@ -170,7 +175,15 @@ export class OrdersService {
         take: limit,
       });
 
-      return orders.map<OrderResponseDto>((order) => this.plainOrder(order));
+      return {
+        message: '',
+        data: {
+          orders: orders.map<OrderResponseDto>((order) =>
+            this.plainOrder(order),
+          ),
+          totalOrders,
+        },
+      };
     } catch (err) {
       this.handlerException.handlerDBException(err);
     }
