@@ -165,7 +165,10 @@ export class CartService {
       product: {
         ...cartItem.product,
         createdBy: cartItem.product.createdBy.fullName,
-        images: cartItem.product.images?.map((img) => img.name),
+        images: cartItem.product.images
+          ?.map((img) => img.name)
+          .sort()
+          .reverse(),
       },
     };
   }

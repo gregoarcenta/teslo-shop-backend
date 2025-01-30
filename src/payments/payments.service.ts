@@ -63,7 +63,7 @@ export class PaymentsService {
       mode: 'payment',
       expires_at: Math.floor(Date.now() / 1000) + 60 * 30,
       success_url: `${this.urlSuccess}?token=${token}`,
-      cancel_url: `${this.urlCancel}?token=${token}`,
+      cancel_url: `${this.urlCancel}`,
     });
   }
 
