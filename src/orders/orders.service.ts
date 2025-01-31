@@ -283,6 +283,8 @@ export class OrdersService {
       product: {
         id: orderItem.product.id,
         title: orderItem.product.title,
+        images: orderItem.product.images,
+        slug: orderItem.product.slug,
       },
     };
   }

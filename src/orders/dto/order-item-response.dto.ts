@@ -11,5 +11,5 @@ export class OrderItemResponseDto extends PickType(OrderItem, [
     description: 'Order items product',
     type: PickType(Product, ['id', 'title']),
   })
-  product: Pick<Product, 'id' | 'title'>;
+  product: Pick<Product, 'id' | 'title' | 'images' | 'slug'>;
 }
