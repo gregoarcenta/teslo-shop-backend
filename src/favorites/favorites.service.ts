@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { FavoriteDto } from './dto/favorite.dto';
 import { User } from '../auth/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -19,26 +15,26 @@ export class FavoritesService {
     private readonly favoriteRepository: Repository<Favorite>,
   ) {}
 
-  async create(createFavoriteDto: FavoriteDto, user: User) {
+  async toggleFavorite(createFavoriteDto: FavoriteDto, user: User) {
     const { productId } = createFavoriteDto;
-    const { id: userId } = user;
-
-    const find = await this.favoriteRepository.findOne({
-      where: { user: { id: userId }, product: { id: productId } },
-    });
-
-    if (find)
-      throw new BadRequestException(
-        'The product has already been added to the favorites',
-      );
 
     try {
-      const favoriteProduct = this.favoriteRepository.create({
-        user: { id: userId },
+      const favorite = await this.favoriteRepository.findOne({
+        where: { user, product: { id: productId } },
+      });
+
+      if (favorite) {
+        await this.favoriteRepository.remove(favorite);
+        return { message: 'Product has been removed from favorites' };
+      }
+
+      const newFavorite = this.favoriteRepository.create({
+        user,
         product: { id: productId },
       });
-      await this.favoriteRepository.save(favoriteProduct);
-      return { message: 'Product has been added to the favorites' };
+
+      await this.favoriteRepository.save(newFavorite);
+      return { message: 'Product has been added to favorites' };
     } catch (err) {
       this.handlerException.handlerDBException(err);
     }
@@ -56,32 +52,6 @@ export class FavoritesService {
           .sort()
           .reverse(),
       }));
-    } catch (err) {
-      this.handlerException.handlerDBException(err);
-    }
-  }
-
-  private async findOne(productId: string, userId: string): Promise<Favorite> {
-    const find = await this.favoriteRepository.findOne({
-      where: { user: { id: userId }, product: { id: productId } },
-    });
-
-    if (!find)
-      throw new NotFoundException('Product not found in the favorites');
-
-    return find;
-  }
-
-  async remove(createFavoriteDto: FavoriteDto, user: User) {
-    const { productId } = createFavoriteDto;
-    const { id: userId } = user;
-
-    const favorite = await this.findOne(productId, userId);
-
-    try {
-      const favoriteProduct = await this.favoriteRepository.remove(favorite);
-      console.log('favoriteProduct', favoriteProduct);
-      return { message: 'Product has been removed to the favorites' };
     } catch (err) {
       this.handlerException.handlerDBException(err);
     }
