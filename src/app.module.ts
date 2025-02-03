@@ -10,6 +10,7 @@ import { CartModule } from './cart/cart.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { OrdersModule } from './orders/orders.module';
 import { PaymentsModule } from './payments/payments.module';
+import { FavoritesModule } from './favorites/favorites.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { PaymentsModule } from './payments/payments.module';
     CartModule,
     OrdersModule,
     PaymentsModule,
+    FavoritesModule,
   ],
 })
 export class AppModule {}
