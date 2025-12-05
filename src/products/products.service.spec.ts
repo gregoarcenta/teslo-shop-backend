@@ -5,7 +5,7 @@ import { Product, ProductImage } from './entities';
 import { HandlerException } from '../common/exceptions/handler.exception';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CreateProductDto, ProductResponseDto } from './dto';
-import { User } from '../auth/entities/user.entity';
+import { User } from '../modules/auth/entities/user.entity';
 import { NotFoundException } from '@nestjs/common';
 
 describe('ProductsService', () => {

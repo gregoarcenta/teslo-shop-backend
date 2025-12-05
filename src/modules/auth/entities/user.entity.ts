@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Role } from '../../config';
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
-import { Product } from '../../products/entities';
+import { Role } from '../../../config';
+import { Product } from '../../../products/entities';
 
 @Entity('users')
 export class User {

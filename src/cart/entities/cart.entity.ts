@@ -1,4 +1,3 @@
-import { User } from '../../auth/entities/user.entity';
 import {
   CreateDateColumn,
   Entity,
@@ -10,6 +9,7 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { CartItem } from './cart-item.entity';
+import { User } from '../../modules/auth/entities/user.entity';
 
 @Entity('carts')
 export class Cart {

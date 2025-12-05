@@ -8,9 +8,10 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { User } from '../../auth/entities/user.entity';
+
 import { ProductImage } from './product-image.entity';
 import { Gender, Size, Type } from '../enums';
+import { User } from '../../modules/auth/entities/user.entity';
 
 @Entity({ name: 'products' })
 export class Product {

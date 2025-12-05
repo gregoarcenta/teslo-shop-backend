@@ -10,9 +10,8 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
-import { Auth, GetUser } from '../auth/decorators';
 import { OrderPaginationDto, UpdateOrderDto } from './dto';
-import { User } from '../auth/entities/user.entity';
+
 import { ApiTags } from '@nestjs/swagger';
 import { ApiResponseInterceptor } from '../common/interceptors/api-response/api-response.interceptor';
 import {
@@ -23,6 +22,8 @@ import {
   ApiUpdateResponse,
 } from '../swagger/decorators/orders';
 import { Role } from '../config';
+import { Auth, GetUser } from '../modules/auth/decorators';
+import { User } from '../modules/auth/entities/user.entity';
 
 @ApiTags('Orders')
 @UseInterceptors(ApiResponseInterceptor)

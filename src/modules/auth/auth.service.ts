@@ -8,10 +8,10 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { HandlerException } from '../common/exceptions/handler.exception';
 import { IPayloadJwt } from './strategies/jwt.strategy';
 import { User } from './entities/user.entity';
 import { SignInDto, SignUpDto, UserResponseDto } from './dto';
+import { HandlerException } from '../../common/exceptions/handler.exception';
 
 @Injectable()
 export class AuthService {

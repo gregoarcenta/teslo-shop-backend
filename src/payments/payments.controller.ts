@@ -12,7 +12,6 @@ import { PaymentsService } from './payments.service';
 import { PaymentSessionDto } from './dto/payment-session.dto';
 import { ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
 import { ApiResponseInterceptor } from '../common/interceptors/api-response/api-response.interceptor';
-import { Auth } from '../auth/decorators';
 import { ValidateOrderUserGuard } from '../common/guards/validate-order-user/validate-order-user.guard';
 import { TokenSessionDto } from './dto/token-session.dto';
 import {
@@ -20,6 +19,7 @@ import {
   ApiValidateTokenResponse,
   ApiWebhookResponse,
 } from '../swagger/decorators/payment';
+import { Auth } from '../modules/auth/decorators';
 
 @ApiTags('Payments')
 @UseInterceptors(ApiResponseInterceptor)

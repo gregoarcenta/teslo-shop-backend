@@ -14,7 +14,7 @@ import { Role } from '../config';
 import { Response } from 'express';
 import { FilesService } from './files.service';
 import { ApiTags } from '@nestjs/swagger';
-import { Auth } from '../auth/decorators';
+import { Auth } from '../modules/auth/decorators';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiDeleteImageResponse,

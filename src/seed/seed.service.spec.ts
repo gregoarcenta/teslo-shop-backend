@@ -3,7 +3,7 @@ import { SeedService } from './seed.service';
 import { AuthService } from '../auth/auth.service';
 import { ProductsService } from '../products/products.service';
 import { UserResponseDto } from '../auth/dto';
-import { User } from '../auth/entities/user.entity';
+import { User } from '../modules/auth/entities/user.entity';
 
 jest.mock('../auth/auth.service');
 jest.mock('../products/products.service');

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { FavoriteDto } from './dto/favorite.dto';
-import { User } from '../auth/entities/user.entity';
+import { User } from '../modules/auth/entities/user.entity';
 import { Repository } from 'typeorm';
 import { HandlerException } from '../common/exceptions/handler.exception';
 import { InjectRepository } from '@nestjs/typeorm';

@@ -11,9 +11,9 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { Auth, GetUser } from '../auth/decorators';
+import { Auth, GetUser } from '../modules/auth/decorators';
 import { Role } from '../config';
-import { User } from '../auth/entities/user.entity';
+import { User } from '../modules/auth/entities/user.entity';
 import { ApiTags } from '@nestjs/swagger';
 import {
   ApiCreateResponse,

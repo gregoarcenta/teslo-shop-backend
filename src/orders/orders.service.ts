@@ -13,7 +13,7 @@ import {
   OrderResponseDto,
   UpdateOrderDto,
 } from './dto';
-import { User } from '../auth/entities/user.entity';
+import { User } from '../modules/auth/entities/user.entity';
 import { CartService } from '../cart/cart.service';
 import { Product } from '../products/entities';
 import { OrderStatus } from './enums/order-status';

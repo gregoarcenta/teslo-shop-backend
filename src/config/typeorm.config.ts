@@ -1,26 +1,35 @@
-import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
-import { ConfigService } from '@nestjs/config';
-import { Injectable } from '@nestjs/common';
+import { registerAs } from '@nestjs/config';
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { DataSource, DataSourceOptions } from 'typeorm';
+import * as dotenv from 'dotenv';
+import { resolve } from 'path';
 
-@Injectable()
-export class TypeOrmConfigService implements TypeOrmOptionsFactory {
-  constructor(private readonly configService: ConfigService) {}
+dotenv.config({ path: resolve(__dirname, '../../.env') });
 
-  createTypeOrmOptions(): TypeOrmModuleOptions {
-    const isProduction = this.configService.get('NODE_ENV') === 'production';
+const getDatabaseConfiguration = (): DataSourceOptions => ({
+  type: process.env.DB_TYPE as any,
+  host: process.env.DB_HOST,
+  port: parseInt(process.env.DB_PORT || '5432'),
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
+  entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+  migrations: [__dirname + '/../migrations/*{.ts,.js}'],
+  synchronize: true,
+  // synchronize: !isProduction,
+  // ssl: isProduction,
+  // extra: isProduction ? { rejectUnauthorized: false } : null,
+});
 
-    return {
-      type: this.configService.get('DB_TYPE') as any,
-      host: this.configService.get('DB_HOST'),
-      port: this.configService.get('DB_PORT'),
-      username: this.configService.get('DB_USERNAME'),
-      password: this.configService.get('DB_PASSWORD'),
-      database: this.configService.get('DB_DATABASE'),
-      entities: ['dist/**/*.entity.js'],
-      // synchronize: !isProduction,
-      synchronize: true,
-      ssl: isProduction,
-      extra: isProduction ? { rejectUnauthorized: false } : null,
-    };
-  }
-}
+export const dbConfig = registerAs(
+  'database',
+  (): TypeOrmModuleOptions => ({
+    ...getDatabaseConfiguration(),
+  }),
+);
+
+export const dataSourceOptions: DataSourceOptions = {
+  ...getDatabaseConfiguration(),
+};
+
+export default new DataSource(dataSourceOptions);

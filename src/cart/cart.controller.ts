@@ -11,7 +11,7 @@ import {
 import { CartService } from './cart.service';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiResponseInterceptor } from '../common/interceptors/api-response/api-response.interceptor';
-import { Auth, GetUser } from '../auth/decorators';
+import { Auth, GetUser } from '../modules/auth/decorators';
 import { ValidateCartAndProductGuard } from '../common/guards/validate-cart-and-product/validate-cart-and-product.guard';
 import { CartProductDto, CartProductUpdateDto } from './dto';
 import {

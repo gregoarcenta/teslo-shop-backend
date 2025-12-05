@@ -5,7 +5,7 @@ import { Order, OrderItem } from './entities';
 import { CartService } from '../cart/cart.service';
 import { HandlerException } from '../common/exceptions/handler.exception';
 import { DataSource } from 'typeorm';
-import { User } from '../auth/entities/user.entity';
+import { User } from '../modules/auth/entities/user.entity';
 import { CartResponseDto } from '../cart/dto';
 import { Gender, Size, Type } from '../products/enums';
 import { ProductResponseDto } from '../products/dto';

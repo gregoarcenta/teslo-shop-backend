@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { OrderStatus } from '../enums/order-status';
-import { User } from '../../auth/entities/user.entity';
+import { User } from '../../modules/auth/entities/user.entity';
 import { OrderItem } from './order-items.entity';
 
 @Entity('orders')

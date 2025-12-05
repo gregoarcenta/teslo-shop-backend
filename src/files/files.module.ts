@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { FilesController } from './files.controller';
-import { AuthModule } from '../auth/auth.module';
+import { AuthModule } from '../modules/auth/auth.module';
 import { CloudinaryService } from './services/cloudinary.service';
 import { CloudinaryProvider } from '../config/cloudinary.config';
 

@@ -3,8 +3,8 @@ import { FavoritesService } from './favorites.service';
 import { FavoriteDto } from './dto/favorite.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiResponseInterceptor } from '../common/interceptors/api-response/api-response.interceptor';
-import { Auth, GetUser } from '../auth/decorators';
-import { User } from '../auth/entities/user.entity';
+import { Auth, GetUser } from '../modules/auth/decorators';
+import { User } from '../modules/auth/entities/user.entity';
 
 @ApiTags('Favorites')
 @Controller('favorites')

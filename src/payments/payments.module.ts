@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { PaymentsController } from './payments.controller';
-import { AuthModule } from '../auth/auth.module';
+import { AuthModule } from '../modules/auth/auth.module';
 import { OrdersModule } from '../orders/orders.module';
 import { HandlerException } from '../common/exceptions/handler.exception';
 

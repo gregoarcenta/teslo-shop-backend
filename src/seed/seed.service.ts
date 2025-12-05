@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { AuthService } from '../auth/auth.service';
+
 import { initialData } from './data/seed-data';
 import { ProductsService } from '../products/products.service';
-import { User } from '../auth/entities/user.entity';
-import { UserResponseDto } from '../auth/dto';
+import { User } from '../modules/auth/entities/user.entity';
+import { AuthService } from '../modules/auth/auth.service';
+import { UserResponseDto } from '../modules/auth/dto';
 
 @Injectable()
 export class SeedService {

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { OrdersController } from './orders.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from '../auth/auth.module';
+import { AuthModule } from '../modules/auth/auth.module';
 import { Order, OrderItem } from './entities';
 import { HandlerException } from '../common/exceptions/handler.exception';
 import { CartModule } from '../cart/cart.module';
