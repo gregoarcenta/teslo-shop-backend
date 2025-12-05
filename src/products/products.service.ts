@@ -4,17 +4,25 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { User } from '../modules/auth/entities/user.entity';
-import { DataSource, ILike, Not, Repository } from 'typeorm';
+import {
+  DataSource,
+  ILike,
+  Not,
+  Repository,
+  SelectQueryBuilder,
+} from 'typeorm';
 import { HandlerException } from '../common/exceptions/handler.exception';
 import { InjectRepository } from '@nestjs/typeorm';
 import { isUUID } from 'class-validator';
 import {
   CreateProductDto,
-  PaginateProductDto,
   ProductResponseDto,
+  ProductsFilterDto,
   UpdateProductDto,
 } from './dto';
 import { Product, ProductImage } from './entities';
+import { ProductsResponseDto } from './dto/products-response.dto';
+import { SortBy, Type } from './enums';
 
 @Injectable()
 export class ProductsService {
@@ -26,6 +34,48 @@ export class ProductsService {
     @InjectRepository(ProductImage)
     private readonly productImageRepository: Repository<ProductImage>,
   ) {}
+
+  private applyFilters(
+    query: SelectQueryBuilder<Product>,
+    filters: {
+      title?: string;
+      gender?: string;
+      type?: Type[];
+      sizes?: string[];
+      minPrice?: number;
+      maxPrice?: number;
+    },
+  ) {
+    const { title, gender, type, sizes, minPrice, maxPrice } = filters;
+
+    if (title) {
+      query.where('product.title ILIKE :title', { title: `%${title}%` });
+    }
+
+    if (gender) {
+      query.andWhere('(product.gender = :gender OR product.gender = :unisex)', {
+        gender,
+        unisex: 'unisex',
+      });
+    }
+
+    if (type && type.length > 0) {
+      query.andWhere('product.type IN (:...type)', { type });
+    }
+
+    if (sizes && sizes.length > 0) {
+      query.andWhere('product.sizes::text[] && ARRAY[:...sizes]::text[]', {
+        sizes,
+      });
+    }
+    if (minPrice) {
+      query.andWhere('product.price >= :minPrice', { minPrice });
+    }
+
+    if (maxPrice) {
+      query.andWhere('product.price <= :maxPrice', { maxPrice });
+    }
+  }
 
   async create(
     createProductDto: CreateProductDto,
@@ -52,48 +102,68 @@ export class ProductsService {
     }
   }
 
-  async findAll(paginate: PaginateProductDto): Promise<{
-    message: string;
-    data: { products: ProductResponseDto[]; totalItems: number };
-  }> {
-    paginate.limit ??= 10;
-    paginate.offset ??= 0;
-    paginate.order ??= 'newest';
+  async findAll(
+    {
+      page,
+      limit,
+      title,
+      gender,
+      type,
+      sizes,
+      minPrice,
+      maxPrice,
+      order,
+    }: ProductsFilterDto,
+    userId?: string,
+  ): Promise<ProductsResponseDto> {
+    // const query = this.createBaseQuery(userId);
+    const { skip, take } = this.calculatePagination(page, limit);
 
-    const { limit, offset, order, type, term } = paginate;
+    const query = this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.createdBy', 'user')
+      .leftJoinAndSelect('product.images', 'images');
 
-    const queryOptions: any = {};
-    if (type) queryOptions.type = type;
-    if (term) queryOptions.title = ILike(`%${term}%`);
+    // Para saber si le ha dado like a un producto
+    if (userId) {
+      query.loadRelationCountAndMap(
+        'product.isLiked',
+        'product.likes',
+        'userLike',
+        (qb) => qb.where('userLike.user_id = :userId', { userId }),
+      );
+    }
 
-    const orderOptions: any = {};
-    if (order === 'newest') orderOptions.createdAt = 'DESC';
-    if (order === 'increasingPrice') orderOptions.price = 'ASC';
-    if (order === 'decreasingPrice') orderOptions.price = 'DESC';
+    this.applyFilters(query, {
+      title,
+      gender,
+      type,
+      sizes,
+      minPrice,
+      maxPrice,
+    });
+
+    // Aplicar ordenamiento
+    switch (order) {
+      case SortBy.NEWEST:
+        query.orderBy('product.createdAt', 'DESC');
+        break;
+      case SortBy.PRICE_ASC:
+        query.orderBy('product.price', 'ASC');
+        break;
+      case SortBy.PRICE_DESC:
+        query.orderBy('product.price', 'DESC');
+        break;
+      default:
+        query.orderBy('product.createdAt', 'DESC');
+    }
+
+    // Aplicar paginación
+    query.skip(skip).take(take);
 
     try {
-      const productsLength = await this.productRepository.countBy(queryOptions);
-      const products = await this.productRepository.find({
-        where: queryOptions,
-        take: limit,
-        skip: offset,
-        order: orderOptions,
-      });
-
-      return {
-        message: 'products have been successfully obtained',
-        data: {
-          products: products.map(({ images, ...productProperties }) => ({
-            ...productProperties,
-            createdBy: productProperties.createdBy.fullName,
-            images: images
-              .map((img) => img.name)
-              .sort()
-              .reverse(),
-          })),
-          totalItems: productsLength,
-        },
-      };
+      const [products, totalItems] = await query.getManyAndCount();
+      return this.createPaginatedResponse(products, totalItems, page, limit);
     } catch (err) {
       this.handlerException.handlerDBException(err);
     }
@@ -115,10 +185,8 @@ export class ProductsService {
     return {
       ...product,
       createdBy: product.createdBy.fullName,
-      images: product.images
-        .map((image) => image.name)
-        .sort()
-        .reverse(),
+      images: product.images.map((image) => image.name),
+      isLiked: false,
     };
   }
 
@@ -266,5 +334,38 @@ export class ProductsService {
       );
     }
     return product as Product;
+  }
+
+  private calculatePagination(page: number, limit: number) {
+    return {
+      skip: (page - 1) * limit,
+      take: limit,
+    };
+  }
+
+  private createPaginatedResponse(
+    products: Product[],
+    total: number,
+    page: number,
+    limit: number,
+  ): ProductsResponseDto {
+    return {
+      products: products.map((product) => this.transformProductData(product)),
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  private transformProductData(
+    product: Product & { isLiked?: number },
+  ): ProductResponseDto {
+    return {
+      ...product,
+      createdBy: product.createdBy.fullName,
+      images: product.images.map((image) => image.name),
+      isLiked: product.isLiked > 0,
+    };
   }
 }

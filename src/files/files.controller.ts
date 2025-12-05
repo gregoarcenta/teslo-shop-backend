@@ -53,7 +53,6 @@ export class FilesController {
 
   @Delete('product/image/:id')
   @Auth(Role.ADMIN)
-  @UseInterceptors(ApiResponseInterceptor)
   @ApiDeleteImageResponse()
   deleteImage(@Param('id') id: string) {
     return this.filesService.deleteImage(id);

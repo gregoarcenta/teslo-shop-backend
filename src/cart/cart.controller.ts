@@ -24,7 +24,6 @@ import {
 
 @ApiTags('Cart')
 @Controller('cart')
-@UseInterceptors(ApiResponseInterceptor)
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 

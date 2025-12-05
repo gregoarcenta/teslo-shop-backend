@@ -12,6 +12,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { ProductImage } from './product-image.entity';
 import { Gender, Size, Type } from '../enums';
 import { User } from '../../modules/auth/entities/user.entity';
+import { Favorite } from 'src/favorites/entities/favorite.entity';
 
 @Entity({ name: 'products' })
 export class Product {
@@ -98,6 +99,9 @@ export class Product {
   @ManyToOne(() => User, (user) => user.products, { eager: true })
   @JoinColumn({ name: 'created_by' })
   createdBy: User;
+
+  @OneToMany(() => Favorite, (favorite) => favorite.product)
+  likes: Favorite[];
 
   @ApiProperty({
     description: 'Product created at',

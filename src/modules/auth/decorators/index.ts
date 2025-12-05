@@ -1,3 +1,4 @@
-export { Auth } from './auth.decorator';
-export { Roles } from './roles.decorator';
-export { GetUser } from './get-user.decorator';
+export * from './auth.decorator';
+export * from './get-user.decorator';
+export * from './optional-auth.decorator';
+export * from './roles.decorator';

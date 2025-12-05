@@ -8,7 +8,6 @@ import { User } from '../modules/auth/entities/user.entity';
 
 @ApiTags('Favorites')
 @Controller('favorites')
-@UseInterceptors(ApiResponseInterceptor)
 export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
 

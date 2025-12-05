@@ -47,10 +47,8 @@ export class FavoritesService {
       return favorites.map((fav) => ({
         ...fav.product,
         createdBy: fav.product.createdBy.fullName,
-        images: fav.product.images
-          .map((image) => image.name)
-          .sort()
-          .reverse(),
+        images: fav.product.images?.map((image) => image.name),
+        isLiked: true,
       }));
     } catch (err) {
       this.handlerException.handlerDBException(err);

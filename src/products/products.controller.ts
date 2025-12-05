@@ -8,10 +8,9 @@ import {
   Patch,
   Post,
   Query,
-  UseInterceptors,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { Auth, GetUser } from '../modules/auth/decorators';
+import { Auth, GetUser, OptionalAuth } from '../modules/auth/decorators';
 import { Role } from '../config';
 import { User } from '../modules/auth/entities/user.entity';
 import { ApiTags } from '@nestjs/swagger';
@@ -22,12 +21,10 @@ import {
   ApiRemoveResponse,
   ApiUpdateResponse,
 } from '../swagger/decorators/products';
-import { CreateProductDto, PaginateProductDto, UpdateProductDto } from './dto';
-import { ApiResponseInterceptor } from '../common/interceptors/api-response/api-response.interceptor';
+import { CreateProductDto, UpdateProductDto, ProductsFilterDto } from './dto';
 
 @ApiTags('Products')
 @Controller('products')
-@UseInterceptors(ApiResponseInterceptor)
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
@@ -39,9 +36,13 @@ export class ProductsController {
   }
 
   @Get()
+  @OptionalAuth()
   @ApiFindAllResponse()
-  findAll(@Query() paginate: PaginateProductDto) {
-    return this.productsService.findAll(paginate);
+  findAll(
+    @Query() filters: ProductsFilterDto,
+    @GetUser('optional') user?: User,
+  ) {
+    return this.productsService.findAll(filters, user?.id);
   }
 
   @Get(':term')

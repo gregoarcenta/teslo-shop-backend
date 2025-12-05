@@ -4,7 +4,7 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import { map, Observable } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 
 export interface IResponse<T> {
   statusCode: number;
@@ -13,9 +13,10 @@ export interface IResponse<T> {
 }
 
 @Injectable()
-export class ApiResponseInterceptor<T>
-  implements NestInterceptor<T, IResponse<T>>
-{
+export class ApiResponseInterceptor<T> implements NestInterceptor<
+  T,
+  IResponse<T>
+> {
   intercept(
     context: ExecutionContext,
     next: CallHandler,

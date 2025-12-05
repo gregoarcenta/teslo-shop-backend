@@ -22,7 +22,6 @@ import {
 import { Auth } from '../modules/auth/decorators';
 
 @ApiTags('Payments')
-@UseInterceptors(ApiResponseInterceptor)
 @Controller('payments')
 export class PaymentsController {
   constructor(private readonly paymentsService: PaymentsService) {}

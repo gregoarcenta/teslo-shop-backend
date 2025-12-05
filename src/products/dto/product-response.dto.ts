@@ -13,4 +13,7 @@ export class ProductResponseDto extends OmitType(Product, [
     example: ['image1.jpg', 'image2.jpg'],
   })
   images: string[];
+
+  @ApiProperty({ description: 'Is user liked', example: 'false' })
+  isLiked: boolean;
 }

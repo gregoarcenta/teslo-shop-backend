@@ -26,7 +26,6 @@ import { Auth, GetUser } from '../modules/auth/decorators';
 import { User } from '../modules/auth/entities/user.entity';
 
 @ApiTags('Orders')
-@UseInterceptors(ApiResponseInterceptor)
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}

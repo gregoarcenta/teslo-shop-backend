@@ -1,3 +1,4 @@
-export { Gender } from './genders';
-export { Size } from './sizes';
-export { Type } from './type';
+export * from './genders';
+export * from './sizes';
+export * from './sort';
+export * from './type';
