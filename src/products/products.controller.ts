@@ -18,10 +18,12 @@ import {
   ApiCreateResponse,
   ApiFindAllResponse,
   ApiFindOneResponse,
+  ApiFindSearchSuggestionsResponse,
   ApiRemoveResponse,
   ApiUpdateResponse,
 } from '../swagger/decorators/products';
 import { CreateProductDto, UpdateProductDto, ProductsFilterDto } from './dto';
+import { SearchSuggestionsDto } from './dto/searchSuggestions.dto';
 
 @ApiTags('Products')
 @Controller('products')
@@ -43,6 +45,12 @@ export class ProductsController {
     @GetUser('optional') user?: User,
   ) {
     return this.productsService.findAll(filters, user?.id);
+  }
+
+  @Get('search/suggestions')
+  @ApiFindSearchSuggestionsResponse()
+  findSearchSuggestions(@Query() searchSuggestionsDto: SearchSuggestionsDto) {
+    return this.productsService.findSearchSuggestions(searchSuggestionsDto);
   }
 
   @Get(':term')

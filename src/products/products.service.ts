@@ -4,13 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { User } from '../modules/auth/entities/user.entity';
-import {
-  DataSource,
-  ILike,
-  Not,
-  Repository,
-  SelectQueryBuilder,
-} from 'typeorm';
+import { DataSource, Not, Repository, SelectQueryBuilder } from 'typeorm';
 import { HandlerException } from '../common/exceptions/handler.exception';
 import { InjectRepository } from '@nestjs/typeorm';
 import { isUUID } from 'class-validator';
@@ -23,6 +17,7 @@ import {
 import { Product, ProductImage } from './entities';
 import { ProductsResponseDto } from './dto/products-response.dto';
 import { SortBy, Type } from './enums';
+import { SearchSuggestionsDto } from './dto/searchSuggestions.dto';
 
 @Injectable()
 export class ProductsService {
@@ -173,6 +168,41 @@ export class ProductsService {
       return this.createPaginatedResponse(products, totalItems, page, limit);
     } catch (err) {
       this.handlerException.handlerDBException(err);
+    }
+  }
+
+  async findSearchSuggestions({
+    query,
+    limit,
+  }: SearchSuggestionsDto): Promise<Partial<ProductResponseDto>[]> {
+    try {
+      const products = await this.productRepository
+        .createQueryBuilder('product')
+        .leftJoinAndSelect('product.images', 'images')
+        .where('product.title ILIKE :query', { query: `%${query}%` })
+        .orWhere('product.description ILIKE :query', { query: `%${query}%` })
+        .orWhere('product.slug ILIKE :query', { query: `%${query}%` })
+        .select([
+          'product.id',
+          'product.title',
+          'product.slug',
+          'product.price',
+          'product.createdAt',
+        ])
+        .addSelect('images.name')
+        .orderBy('product.createdAt', 'DESC')
+        .take(limit)
+        .getMany();
+
+      return products.map((product) => ({
+        id: product.id,
+        title: product.title,
+        slug: product.slug,
+        price: product.price,
+        image: product.images[0]?.name || null,
+      }));
+    } catch (error) {
+      this.handlerException.handlerDBException(error);
     }
   }
 
