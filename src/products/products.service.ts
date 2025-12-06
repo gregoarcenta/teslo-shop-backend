@@ -23,7 +23,6 @@ import {
 import { Product, ProductImage } from './entities';
 import { ProductsResponseDto } from './dto/products-response.dto';
 import { SortBy, Type } from './enums';
-import { log } from 'console';
 
 @Injectable()
 export class ProductsService {

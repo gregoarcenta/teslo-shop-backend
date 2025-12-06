@@ -1,9 +1,11 @@
 import { registerAs } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { DataSource, DataSourceOptions } from 'typeorm';
+import * as dotenv from 'dotenv';
 import { resolve } from 'path';
 
-process.loadEnvFile(resolve(__dirname, '../../.env'));
+// Cargar variables de entorno
+dotenv.config({ path: resolve(__dirname, '../../.env') });
 
 const isProduction = process.env.NODE_ENV === 'production';
 
