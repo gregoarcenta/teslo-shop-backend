@@ -23,6 +23,7 @@ import {
 import { Product, ProductImage } from './entities';
 import { ProductsResponseDto } from './dto/products-response.dto';
 import { SortBy, Type } from './enums';
+import { log } from 'console';
 
 @Injectable()
 export class ProductsService {
@@ -34,6 +35,25 @@ export class ProductsService {
     @InjectRepository(ProductImage)
     private readonly productImageRepository: Repository<ProductImage>,
   ) {}
+
+  private createBaseQuery(userId?: string): SelectQueryBuilder<Product> {
+    const query = this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.createdBy', 'user')
+      .leftJoinAndSelect('product.images', 'images');
+
+    // Para saber si le ha dado like a un producto
+    if (userId) {
+      query.loadRelationCountAndMap(
+        'product.isLiked',
+        'product.likes',
+        'userLike',
+        (qb) => qb.where('userLike.user_id = :userId', { userId }),
+      );
+    }
+
+    return query;
+  }
 
   private applyFilters(
     query: SelectQueryBuilder<Product>,
@@ -116,24 +136,12 @@ export class ProductsService {
     }: ProductsFilterDto,
     userId?: string,
   ): Promise<ProductsResponseDto> {
-    // const query = this.createBaseQuery(userId);
+    const query = this.createBaseQuery(userId);
+
+    // Calcular paginación
     const { skip, take } = this.calculatePagination(page, limit);
 
-    const query = this.productRepository
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.createdBy', 'user')
-      .leftJoinAndSelect('product.images', 'images');
-
-    // Para saber si le ha dado like a un producto
-    if (userId) {
-      query.loadRelationCountAndMap(
-        'product.isLiked',
-        'product.likes',
-        'userLike',
-        (qb) => qb.where('userLike.user_id = :userId', { userId }),
-      );
-    }
-
+    // Aplicar filtros
     this.applyFilters(query, {
       title,
       gender,
@@ -169,25 +177,27 @@ export class ProductsService {
     }
   }
 
-  async findOne(term: string): Promise<ProductResponseDto> {
-    const id = isUUID(term) ? term : null;
+  async findOne(term: string, userId?: string): Promise<ProductResponseDto> {
     let product: Product;
-    try {
-      product = await this.productRepository.findOne({
-        where: [{ id }, { title: ILike(term) }, { slug: term }],
+    const query = this.createBaseQuery(userId);
+
+    if (isUUID(term)) {
+      query.where('product.id = :id', { id: term });
+    } else {
+      query.where('product.title ILIKE :term OR product.slug = :term', {
+        term,
       });
+    }
+
+    try {
+      product = await query.getOne();
     } catch (err) {
       this.handlerException.handlerDBException(err);
     }
 
     if (!product) throw new NotFoundException(`Product ${term} not found`);
 
-    return {
-      ...product,
-      createdBy: product.createdBy.fullName,
-      images: product.images.map((image) => image.name),
-      isLiked: false,
-    };
+    return this.transformProductData(product);
   }
 
   async update(

@@ -46,9 +46,10 @@ export class ProductsController {
   }
 
   @Get(':term')
+  @OptionalAuth()
   @ApiFindOneResponse()
-  findOne(@Param('term') term: string) {
-    return this.productsService.findOne(term);
+  findOne(@Param('term') term: string, @GetUser('optional') user?: User) {
+    return this.productsService.findOne(term, user?.id);
   }
 
   @Patch(':id')

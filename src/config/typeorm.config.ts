@@ -1,35 +1,31 @@
 import { registerAs } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { DataSource, DataSourceOptions } from 'typeorm';
-import * as dotenv from 'dotenv';
 import { resolve } from 'path';
 
-dotenv.config({ path: resolve(__dirname, '../../.env') });
+process.loadEnvFile(resolve(__dirname, '../../.env'));
+
+const isProduction = process.env.NODE_ENV === 'production';
 
 const getDatabaseConfiguration = (): DataSourceOptions => ({
-  type: process.env.DB_TYPE as any,
-  host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT || '5432'),
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
+  type: (process.env.DB_TYPE || 'postgres') as any,
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT || '5432', 10),
+  username: process.env.DB_USERNAME || 'postgres',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_DATABASE || 'teslo_shop',
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   migrations: [__dirname + '/../migrations/*{.ts,.js}'],
   synchronize: true,
-  // synchronize: !isProduction,
-  // ssl: isProduction,
-  // extra: isProduction ? { rejectUnauthorized: false } : null,
+  ssl: isProduction,
+  extra: isProduction ? { rejectUnauthorized: false } : null,
 });
 
 export const dbConfig = registerAs(
   'database',
-  (): TypeOrmModuleOptions => ({
-    ...getDatabaseConfiguration(),
-  }),
+  (): TypeOrmModuleOptions => getDatabaseConfiguration(),
 );
 
-export const dataSourceOptions: DataSourceOptions = {
-  ...getDatabaseConfiguration(),
-};
+export const dataSourceOptions: DataSourceOptions = getDatabaseConfiguration();
 
 export default new DataSource(dataSourceOptions);

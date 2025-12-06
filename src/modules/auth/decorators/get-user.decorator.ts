@@ -8,6 +8,8 @@ export const GetUser = createParamDecorator(
   (data: string, ctx: ExecutionContext) => {
     const { user } = ctx.switchToHttp().getRequest();
 
+    // console.log('User in GetUser decorator:', user);
+
     if (data === 'optional' && !user) {
       return null;
     }
