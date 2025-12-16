@@ -21,7 +21,6 @@ export class AuthService {
     private eventEmitter: EventEmitter2,
     private readonly jwtService: JwtService,
   ) {}
-
   async signUp(
     signUpDto: SignUpDto,
   ): Promise<{ message: string; data: UserResponseDto }> {
@@ -38,11 +37,14 @@ export class AuthService {
 
     this.eventEmitter.emit('user.created', user);
 
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
     return {
       message: 'Your account has been successfully created!',
       data: {
         user: await this.findUser(user.id),
         accessToken: await this.getJwtToken({ id: user.id }),
+        cartId: await this.findCartIdByUser(user.id),
       },
     };
   }
@@ -77,6 +79,7 @@ export class AuthService {
       data: {
         user: await this.findUser(user.id),
         accessToken: await this.getJwtToken({ id: user.id }),
+        cartId: await this.findCartIdByUser(user.id),
       },
     };
   }
@@ -85,6 +88,7 @@ export class AuthService {
     return {
       user,
       accessToken: await this.getJwtToken({ id: user.id }),
+      cartId: await this.findCartIdByUser(user.id),
     };
   }
 
@@ -100,6 +104,27 @@ export class AuthService {
     if (!user) throw new NotFoundException("User can't be found");
 
     return user;
+  }
+
+  private async findCartIdByUser(userId: string): Promise<string> {
+    let result: { cartId: string };
+
+    try {
+      result = await this.usersRepository
+        .createQueryBuilder('user')
+        .leftJoin('user.cart', 'cart')
+        .select('cart.id', 'cartId')
+        .where('user.id = :userId', { userId })
+        .getRawOne();
+    } catch (err) {
+      this.handlerException.handlerDBException(err);
+    }
+
+    if (!result || !result.cartId) {
+      throw new NotFoundException("Cart can't be found");
+    }
+
+    return result.cartId;
   }
 
   private async getJwtToken(payload: IPayloadJwt): Promise<string> {

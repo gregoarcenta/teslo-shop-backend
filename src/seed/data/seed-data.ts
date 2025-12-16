@@ -5,7 +5,7 @@ import { CreateProductDto } from '../../products/dto';
 import { User } from '../../modules/auth/entities/user.entity';
 
 interface SeedData {
-  users: Omit<User, 'id' | 'isActive' | 'products'>[];
+  users: Omit<User, 'id' | 'isActive' | 'products' | 'cart'>[];
   products: CreateProductDto[];
 }
 

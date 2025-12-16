@@ -1,7 +1,8 @@
+name: teslo-backend
 services:
   postgres:
     image: postgres:17.2
-    container_name: postgresdb
+    container_name: db
     ports:
       - "5432:5432"
     environment:

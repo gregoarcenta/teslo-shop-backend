@@ -1,7 +1,14 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { Role } from '../../../config';
 import { Product } from '../../../products/entities';
+import { Cart } from 'src/cart/entities';
 
 @Entity('users')
 export class User {
@@ -39,6 +46,9 @@ export class User {
   })
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
+
+  @OneToOne(() => Cart, (cart) => cart.user, { cascade: true })
+  cart: Cart;
 
   @ApiProperty({
     description: 'User roles',
