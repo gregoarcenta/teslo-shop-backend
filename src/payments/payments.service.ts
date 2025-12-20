@@ -24,12 +24,13 @@ export class PaymentsService {
     this.stripeApiKey = this.configService.get<string>('STRIPE_API_SECRET');
     this.stripeEpSecret = this.configService.get<string>('STRIPE_EP_SECRET');
     this.tokenSecret = this.configService.get<string>('STRIPE_TOKEN_SECRET');
-    this.urlSuccess = this.configService.get<string>('STRIPE_URL_SUCCESS');
-    this.urlCancel = this.configService.get<string>('STRIPE_URL_CANCEL');
     this.stripe = new Stripe(this.stripeApiKey);
   }
 
-  async createPaymentSession(createPaymentDto: PaymentSessionDto) {
+  async createPaymentSession(
+    createPaymentDto: PaymentSessionDto,
+    origin: string,
+  ) {
     const order = await this.ordersService.findOne(createPaymentDto.orderId);
 
     if (order.status !== OrderStatus.PENDING) {
@@ -55,6 +56,9 @@ export class PaymentsService {
       { expiresIn: '30m', secret: this.tokenSecret },
     );
 
+    const successUrl = `${origin}/payment-success?token=${token}`;
+    const cancelUrl = `${origin}`;
+
     return await this.stripe.checkout.sessions.create({
       metadata: { orderId: order.id },
       customer_email: order.userEmail,
@@ -62,8 +66,8 @@ export class PaymentsService {
       line_items,
       mode: 'payment',
       expires_at: Math.floor(Date.now() / 1000) + 60 * 30,
-      success_url: `${this.urlSuccess}?token=${token}`,
-      cancel_url: `${this.urlCancel}`,
+      success_url: successUrl,
+      cancel_url: cancelUrl,
     });
   }
 

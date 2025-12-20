@@ -54,10 +54,6 @@ describe('PaymentsService', () => {
                   return 'test_ep_secret';
                 case 'STRIPE_TOKEN_SECRET':
                   return 'test_token_secret';
-                case 'STRIPE_URL_SUCCESS':
-                  return 'http://example.com/success';
-                case 'STRIPE_URL_CANCEL':
-                  return 'http://example.com/cancel';
                 default:
                   return null;
               }
@@ -104,7 +100,10 @@ describe('PaymentsService', () => {
       ordersService.findOne = jest.fn().mockResolvedValue(order);
 
       const createPaymentDto: PaymentSessionDto = { orderId: 'order1' };
-      const result = await service.createPaymentSession(createPaymentDto);
+      const result = await service.createPaymentSession(
+        createPaymentDto,
+        'http://localhost:3000',
+      );
 
       expect(result).toBeDefined();
       expect(result.id).toBe('session_id');
@@ -124,7 +123,7 @@ describe('PaymentsService', () => {
       const createPaymentDto: PaymentSessionDto = { orderId: 'order1' };
 
       await expect(
-        service.createPaymentSession(createPaymentDto),
+        service.createPaymentSession(createPaymentDto, 'http://localhost:3000'),
       ).rejects.toThrow(BadRequestException);
     });
   });

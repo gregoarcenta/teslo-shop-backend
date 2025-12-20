@@ -30,8 +30,11 @@ export class PaymentsController {
   @UseGuards(ValidateOrderUserGuard)
   @Auth()
   @ApiCreatePaymentSessionResponse()
-  createPaymentSession(@Body() paymentSessionDto: PaymentSessionDto) {
-    return this.paymentsService.createPaymentSession(paymentSessionDto);
+  createPaymentSession(
+    @Body() paymentSessionDto: PaymentSessionDto,
+    @Headers('origin') origin: string,
+  ) {
+    return this.paymentsService.createPaymentSession(paymentSessionDto, origin);
   }
 
   @Post('webhook')
