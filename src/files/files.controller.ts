@@ -32,7 +32,7 @@ export class FilesController {
   @Auth(Role.ADMIN)
   @UseInterceptors(FileInterceptor('image'), ApiResponseInterceptor)
   @ApiUploadImageResponse()
-  uploadImage(
+  async uploadImage(
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addFileTypeValidator({ fileType: 'image/jpeg|jpg|png|gif' })
@@ -41,7 +41,10 @@ export class FilesController {
     )
     file: Express.Multer.File,
   ) {
-    return this.filesService.uploadImage(file);
+    return {
+      message: 'Image uploaded successfully',
+      data: await this.filesService.uploadImage(file),
+    };
   }
 
   @Get('product/image/:imageName')

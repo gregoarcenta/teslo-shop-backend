@@ -9,6 +9,7 @@ import {
   IsString,
   Length,
   Min,
+  MinLength,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { Type as ProductType } from '../enums/type';
@@ -36,7 +37,7 @@ export class CreateProductDto {
     example: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   })
   @IsString()
-  @Length(3, 255)
+  @MinLength(10)
   @IsOptional()
   @Transform(({ value }) => value.trim())
   description?: string;
